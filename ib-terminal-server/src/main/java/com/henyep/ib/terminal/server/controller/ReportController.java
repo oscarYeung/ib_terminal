@@ -66,7 +66,7 @@ public class ReportController extends AbstractController {
 	@Resource(name = "ReportMarginOutService")
 	private ReportMarginOutService reportMarginOutService;
 	
-	@Autowired
+	//@Autowired
 	ServletContext context; 
 	
 	@RequestMapping(value = "/test/getIbCommissionReport")
