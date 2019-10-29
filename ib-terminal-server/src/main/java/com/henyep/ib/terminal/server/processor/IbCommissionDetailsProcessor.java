@@ -22,7 +22,6 @@ import com.henyep.ib.terminal.api.dto.db.RebateBean;
 import com.henyep.ib.terminal.api.dto.db.RebateDetailsBean;
 import com.henyep.ib.terminal.api.dto.db.SettingsPointValueBean;
 import com.henyep.ib.terminal.api.dto.db.SettingsSymbolBean;
-import com.henyep.ib.terminal.api.dto.db.SettingsUsdCurrencyExchangeBean;
 import com.henyep.ib.terminal.server.dao.ClientTradeDetailsDao;
 import com.henyep.ib.terminal.server.dao.IbClientMapDao;
 import com.henyep.ib.terminal.server.dao.IbClientRebateMapDao;
@@ -32,7 +31,6 @@ import com.henyep.ib.terminal.server.dao.RebateDao;
 import com.henyep.ib.terminal.server.dao.RebateDetailsDao;
 import com.henyep.ib.terminal.server.dao.SettingsPointValueDao;
 import com.henyep.ib.terminal.server.dao.SettingsSymbolDao;
-import com.henyep.ib.terminal.server.dao.SettingsUsdCurrencyExchangeDao;
 import com.henyep.ib.terminal.server.global.Constants;
 import com.henyep.ib.terminal.server.util.ClientRebateMapUtil;
 import com.henyep.ib.terminal.server.util.DateUtil;
@@ -65,7 +63,6 @@ public class IbCommissionDetailsProcessor {
 	protected List<IbClientRebateMapBean> ibClientRebateMapBeans;
 	protected ClientRebateMapUtil clientRebateMapUtil;
 
-	protected List<SettingsUsdCurrencyExchangeBean> exchangeBeans;
 	protected List<SettingsSymbolBean> settingSymbolBeans;
 	protected SettingsSymbolUtil settingSymbolUtil;
 
@@ -92,9 +89,6 @@ public class IbCommissionDetailsProcessor {
 	protected IbClientMapDao ibClientMapDao;
 	@Resource(name = "IbClientRebateMapDao")
 	protected IbClientRebateMapDao ibClientRebateMapDao;
-
-	@Resource(name = "SettingsUsdCurrencyExchangeDao")
-	protected SettingsUsdCurrencyExchangeDao settingsUsdCurrencyExchangeDao;
 
 	protected boolean isErrorExist = false;
 
@@ -130,9 +124,8 @@ public class IbCommissionDetailsProcessor {
 		clientRebateMapUtil = new ClientRebateMapUtil(ibClientRebateMapBeans);
 		initClientTradeDetails(tradeDate, tradeDate);
 
-		exchangeBeans = settingsUsdCurrencyExchangeDao.getAllSettingsUsdCurrencyExchanges();
 		settingSymbolBeans = settingSymbolDao.getAllSettingsSymbols(tradeDate);
-		settingSymbolUtil = new SettingsSymbolUtil(settingSymbolBeans, exchangeBeans);
+		settingSymbolUtil = new SettingsSymbolUtil(settingSymbolBeans);
 
 		initCltCodeIbMapUtil(trades);
 
@@ -429,22 +422,6 @@ public class IbCommissionDetailsProcessor {
 		}
 	}
 	
-	private Double getRebatePipPerLotFromSettingBean(String symbol, Double pips){
-		SettingsSymbolBean settingSymbolBean = settingSymbolUtil.GetSettingBean(symbol);
-		if (settingSymbolBean != null) {
-			Double exchangeRate = settingSymbolUtil.GetExchangeRate(settingSymbolBean.getCurrency());
-			
-			if(exchangeRate != null){
-				Double rebatePerLot = settingSymbolBean.getContract_size()
-						* settingSymbolBean.getTick_size() 
-						* exchangeRate 
-						* pips;
-				return rebatePerLot;
-			}
-		}
-		return null;
-	}
-	
 	private Double handleAccumulatedRebateCommission(RebateDetailsBean rebateDetail, IbCommissionDetailsBean ibCommissionDetailsBean, 
 			ClientTradeDetailsBean trade, IbTreeBean ibTreeBean, IbClientMapBean ibClientMapBean, HashMap<String, String> ibErrors, Double lastCommissionLot){
 		
@@ -471,23 +448,14 @@ public class IbCommissionDetailsProcessor {
 			ibCommissionDetailsBean.setRebate_per_lot(packageRebateCommissionVal);
 		}
 		// spread
-		else if (packageRebateCommissionType.equals(Constants.TYPE_SPREAD) || packageRebateCommissionType.equals(Constants.TYPE_PIP)) {
-			Double rebatePerLot = null;
-			if(packageRebateCommissionType.equals(Constants.TYPE_SPREAD)){
-				// spread
-				rebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRebateCommissionVal);
-			}
-			else{
-				// spread pip
-				rebatePerLot = getRebatePipPerLotFromSettingBean(trade.getSymbol(), packageRebateCommissionVal);
-			}
-			
+		else if (packageRebateCommissionType.equals(Constants.TYPE_SPREAD)) {
+			Double rebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRebateCommissionVal);
 			if(rebatePerLot != null){
 				double rebateCommissionLot = rebatePerLot * trade.getLot() - lastCommissionLot;
 
 				ibCommissionDetailsBean.setRebate_per_lot(rebatePerLot);
 				ibCommissionDetailsBean.setRebate_commission_lot(rebateCommissionLot);
-				ibCommissionDetailsBean.setRebate_type_lot(packageRebateCommissionType);
+				ibCommissionDetailsBean.setRebate_type_lot(Constants.TYPE_SPREAD);
 				lastCommissionLot += rebateCommissionLot;
 			}
 			else{
@@ -501,7 +469,7 @@ public class IbCommissionDetailsProcessor {
 			}
 		}
 		// spread pips
-//		else if (packageRebateCommissionType.equals(Constants.TYPE_PIP)) {
+		else if (packageRebateCommissionType.equals(Constants.TYPE_PIP)) {
 			// TODO
 //			SettingsPointValueBean settingPointValue = settingsPointValueUtil.getSettingsPoint(symbol,
 //					trade.getTrade_date());
@@ -517,7 +485,7 @@ public class IbCommissionDetailsProcessor {
 //				ibCommissionDetailsBean.setRebate_per_pip(packageRebateCommissionVal);
 //			}
 
-//		}		
+		}		
 		
 		return lastCommissionLot;
 	}
@@ -541,23 +509,14 @@ public class IbCommissionDetailsProcessor {
 				toMasterAmount = packageRabateToMasterVal * trade.getLot();
 			}
 			else{
-				Double directRebatePerLot = null;
-				Double toMasterRebatePerLot = null;
-				if(packageRebateDirectType.equals(Constants.TYPE_SPREAD)){
-					directRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRebateDirectVal);
-					toMasterRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRabateToMasterVal);
-				}
-				else{
-					directRebatePerLot = getRebatePipPerLotFromSettingBean(trade.getSymbol(), packageRebateDirectVal);
-					toMasterRebatePerLot = getRebatePipPerLotFromSettingBean(trade.getSymbol(), packageRabateToMasterVal);
-				}
 				// spread
-				
+				Double directRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRebateDirectVal);
+				Double toMasterRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRabateToMasterVal);
 				if(directRebatePerLot != null && toMasterRebatePerLot != null){
 					double rebateCommissionLot = directRebatePerLot * trade.getLot();
 					ibCommissionDetailsBean.setRebate_per_lot(directRebatePerLot);
 					ibCommissionDetailsBean.setRebate_commission_lot(rebateCommissionLot);
-					ibCommissionDetailsBean.setRebate_type_lot(packageRebateDirectType);
+					ibCommissionDetailsBean.setRebate_type_lot(Constants.TYPE_SPREAD);
 					toMasterAmount = toMasterRebatePerLot * trade.getLot();
 				}
 				else{
@@ -587,21 +546,14 @@ public class IbCommissionDetailsProcessor {
 				toMasterAmount = packageRabateToMasterVal * trade.getLot();
 			}
 			else{
-				Double directRebatePerLot = null;
-				Double toMasterRebatePerLot = null;
-				if(packageRebateDirectType.equals(Constants.TYPE_SPREAD)){
-					directRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRebateDirectVal);
-					toMasterRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRabateToMasterVal);
-				}
-				else{
-					directRebatePerLot = getRebatePipPerLotFromSettingBean(trade.getSymbol(), packageRebateDirectVal);
-					toMasterRebatePerLot = getRebatePipPerLotFromSettingBean(trade.getSymbol(), packageRabateToMasterVal);
-				}
+				// spread
+				Double directRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRebateDirectVal);
+				Double toMasterRebatePerLot = getRebatePerLotFromSettingBean(trade.getSymbol(), packageRabateToMasterVal);
 				if(directRebatePerLot != null && toMasterRebatePerLot != null){
 					double rebateCommissionLot = directRebatePerLot * trade.getLot();
 					ibCommissionDetailsBean.setRebate_per_lot(directRebatePerLot);
 					ibCommissionDetailsBean.setRebate_commission_lot(rebateCommissionLot);
-					ibCommissionDetailsBean.setRebate_type_lot(packageRebateDirectType);
+					ibCommissionDetailsBean.setRebate_type_lot(Constants.TYPE_SPREAD);
 					toMasterAmount = toMasterRebatePerLot * trade.getLot();
 				}
 				else{

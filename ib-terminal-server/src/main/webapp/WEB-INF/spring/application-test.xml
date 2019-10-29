@@ -59,7 +59,6 @@ xmlns:context="http://www.springframework.org/schema/context"
    	<import resource="application-dao-ibCommissionCpa-sqlmap.xml"/>
    	<import resource="application-dao-openTrade-sqlmap.xml"/>
 	<import resource="application-dao-ibDailyFloating-sqlmap.xml"/>
-	<import resource="application-dao-settingsUsdCurrencyExchange-sqlmap.xml"/>
    	
    	
     <context:component-scan base-package="com.henyep.ib.terminal.server" />
