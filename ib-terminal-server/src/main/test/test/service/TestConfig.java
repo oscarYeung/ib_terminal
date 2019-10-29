@@ -1,17 +1,7 @@
 package test.service;
 
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.ParameterizedType;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,30 +12,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.annotation.Resource;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.omg.CORBA.Environment;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.henyep.ib.terminal.api.dto.db.ClientGroupMappingBean;
-import com.henyep.ib.terminal.api.dto.db.ClientTradeDetailsBean;
-import com.henyep.ib.terminal.api.dto.db.IbClientMapBean;
 import com.henyep.ib.terminal.api.dto.db.IbClientRebateMapBean;
 import com.henyep.ib.terminal.api.dto.db.IbTreeBean;
 import com.henyep.ib.terminal.api.dto.db.MarginOutBean;
@@ -54,39 +32,19 @@ import com.henyep.ib.terminal.api.dto.db.RebateBean;
 import com.henyep.ib.terminal.api.dto.db.RebateDetailsBean;
 import com.henyep.ib.terminal.api.dto.db.SettingsPointValueBean;
 import com.henyep.ib.terminal.api.dto.db.SettingsSymbolBean;
-import com.henyep.ib.terminal.api.dto.db.SettingsUsdCurrencyExchangeBean;
-import com.henyep.ib.terminal.api.dto.request.IbRequestDto;
-import com.henyep.ib.terminal.api.dto.request.clientPackageDetails.GetAllClientPackagesRequest;
-import com.henyep.ib.terminal.api.dto.request.clientPackageDetails.GetClientPackagesByIbCodeRequest;
-import com.henyep.ib.terminal.api.dto.request.clientPackageDetails.GetClientPackagesByIbCodeRequestDto;
 import com.henyep.ib.terminal.api.dto.request.ibcommission.CalculateIbCommissionRequest;
 import com.henyep.ib.terminal.api.dto.request.ibcommission.CalculateIbCommissionRequestDto;
-import com.henyep.ib.terminal.api.dto.request.ibcommission.GetIbClientSummaryRequest;
-import com.henyep.ib.terminal.api.dto.request.ibcommission.GetIbClientSummaryRequestDto;
 import com.henyep.ib.terminal.api.dto.request.marginout.ExcelUploadMarginOutRequest;
 import com.henyep.ib.terminal.api.dto.request.marginout.ExcelUploadMarginOutRequestDto;
 import com.henyep.ib.terminal.api.dto.request.marginout.GetMarginOutRequest;
 import com.henyep.ib.terminal.api.dto.request.marginout.GetMarginOutRequestDto;
-import com.henyep.ib.terminal.api.dto.request.rebate.GetRebateByIbCodeWithDateRequest;
-import com.henyep.ib.terminal.api.dto.request.rebate.IbRebateRequestDto;
 import com.henyep.ib.terminal.api.dto.request.schedule.task.BatchCalIbCommissionRequest;
 import com.henyep.ib.terminal.api.dto.request.schedule.task.BatchCalIbCommissionRequestDto;
-import com.henyep.ib.terminal.api.dto.request.schedule.task.GetAllMT5SymbolRequestDto;
-import com.henyep.ib.terminal.api.dto.response.IbResponseDto;
-import com.henyep.ib.terminal.api.dto.response.clientPackageDetails.ClientPackageSpreadTypeDto;
-import com.henyep.ib.terminal.api.dto.response.clientPackageDetails.GetClientPackagesByIbCodeResponse;
 import com.henyep.ib.terminal.api.dto.response.ibcommission.CalculateIbCommissionResponseDto;
-import com.henyep.ib.terminal.api.dto.response.ibcommission.GetIbCommissionResponseDto;
-import com.henyep.ib.terminal.api.dto.response.ibcommission.IbCommissionModel;
-import com.henyep.ib.terminal.api.dto.response.ibcommission.TradeAccountModel;
 import com.henyep.ib.terminal.api.dto.response.marginout.ExcelUploadMarginOutResponseDto;
 import com.henyep.ib.terminal.api.dto.response.marginout.InvalidMarginOutModel;
-import com.henyep.ib.terminal.api.dto.response.rebate.IbClientRebateResponseDto;
-import com.henyep.ib.terminal.api.dto.response.rebate.IbClientRebateWithDetails;
-import com.henyep.ib.terminal.api.dto.response.schedule.task.RunBatchCalIbComTaskResponseDto;
 import com.henyep.ib.terminal.api.dto.response.schedule.task.RunCalIBCommTaskResponseDto;
 import com.henyep.ib.terminal.server.adapter.MT4ServiceAdapterFactory;
-import com.henyep.ib.terminal.server.controller.ScheduleTaskController;
 import com.henyep.ib.terminal.server.controller.validator.ScheduleValidator;
 import com.henyep.ib.terminal.server.dao.IbDailyFloatingDao;
 import com.henyep.ib.terminal.server.dao.ClientDetailsDao;
@@ -100,17 +58,7 @@ import com.henyep.ib.terminal.server.dao.RebateDao;
 import com.henyep.ib.terminal.server.dao.RebateDetailsDao;
 import com.henyep.ib.terminal.server.dao.ScheduleTaskDao;
 import com.henyep.ib.terminal.server.dao.SettingsSymbolDao;
-import com.henyep.ib.terminal.server.dao.SettingsUsdCurrencyExchangeDao;
 import com.henyep.ib.terminal.server.dao.SystemParamsDao;
-import com.henyep.ib.terminal.server.dto.dao.IbClientMapDto;
-import com.henyep.ib.terminal.server.dto.mt4.model.MT5SymbolRecord;
-import com.henyep.ib.terminal.server.dto.mt4.model.Mt4WebServiceConnectionModel;
-import com.henyep.ib.terminal.server.dto.mt4.model.SymbolRecord;
-import com.henyep.ib.terminal.server.dto.mt4.response.GetAllMT5SymbolsResponse;
-import com.henyep.ib.terminal.server.dto.mt4.response.GetAllSymbolsResponse;
-import com.henyep.ib.terminal.server.dto.report.IbProductGroupSummaryDto;
-import com.henyep.ib.terminal.server.dto.report.IbSummaryDto;
-import com.henyep.ib.terminal.server.dto.report.OwnerIbDto;
 import com.henyep.ib.terminal.server.dto.security.SenderDto;
 import com.henyep.ib.terminal.server.factory.DtoFactory;
 import com.henyep.ib.terminal.server.global.Constants;
@@ -230,46 +178,47 @@ public class TestConfig {
 	@Test
 	public void TestBatchScheduleTask(){
 		try{
-			
-			BatchCalIbCommissionRequest request = new BatchCalIbCommissionRequest(); 
-			BatchCalIbCommissionRequestDto body = new BatchCalIbCommissionRequestDto();
-		    String date="2018-08-08";  
-		    Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-		    date="2018-08-10";
-		    Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-			
-			body.setStart_date(startDate);
-			body.setEnd_date(endDate);
-			body.setTeam_head("10072678");
-			request.setBody(body);
-			
-			
-			boolean isUpdatingIbComm = systemParamsDao.isUpdatingIbCommission();
-			
-			if(!isUpdatingIbComm){ 
-				
-				if(startDate.compareTo(endDate) <= 0){
-					Date tradeDate = startDate;
-					while(tradeDate.compareTo(endDate) <= 0){
-						
-						System.out.println("Delete calculate ib commission schedule task");
-						scheduleTaskDao.deleteCalIbCommTask(tradeDate);
-						System.out.println("Init calculate ib commission schedule task");
-						scheduleTaskDao.initCalIbCommScheduleTask(tradeDate);
-						String teamHead = request.getBody().getTeam_head();
-						if(teamHead != null && !teamHead.equals(""))
-							System.out.println("Calculate ib commission, Team head: " + request.getBody().getTeam_head());
-						else
-							System.out.println("Calculate ib commission");
-						RunCalIBCommTaskResponseDto dto = scheduleTask.doCalculateIbCommission(tradeDate, request.getBody().getTeam_head(), "system");
-						
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(tradeDate);
-						cal.add(Calendar.DATE, 1);
-						tradeDate = cal.getTime();
-					}
-				}
-			}
+			System.out.println("Hello");
+//			
+//			BatchCalIbCommissionRequest request = new BatchCalIbCommissionRequest(); 
+//			BatchCalIbCommissionRequestDto body = new BatchCalIbCommissionRequestDto();
+//		    String date="2018-08-08";  
+//		    Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+//		    date="2018-08-10";
+//		    Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+//			
+//			body.setStart_date(startDate);
+//			body.setEnd_date(endDate);
+//			body.setTeam_head("10072678");
+//			request.setBody(body);
+//			
+//			
+//			boolean isUpdatingIbComm = systemParamsDao.isUpdatingIbCommission();
+//			
+//			if(!isUpdatingIbComm){ 
+//				
+//				if(startDate.compareTo(endDate) <= 0){
+//					Date tradeDate = startDate;
+//					while(tradeDate.compareTo(endDate) <= 0){
+//						
+//						System.out.println("Delete calculate ib commission schedule task");
+//						scheduleTaskDao.deleteCalIbCommTask(tradeDate);
+//						System.out.println("Init calculate ib commission schedule task");
+//						scheduleTaskDao.initCalIbCommScheduleTask(tradeDate);
+//						String teamHead = request.getBody().getTeam_head();
+//						if(teamHead != null && !teamHead.equals(""))
+//							System.out.println("Calculate ib commission, Team head: " + request.getBody().getTeam_head());
+//						else
+//							System.out.println("Calculate ib commission");
+//						RunCalIBCommTaskResponseDto dto = scheduleTask.doCalculateIbCommission(tradeDate, request.getBody().getTeam_head(), "system");
+//						
+//						Calendar cal = Calendar.getInstance();
+//						cal.setTime(tradeDate);
+//						cal.add(Calendar.DATE, 1);
+//						tradeDate = cal.getTime();
+//					}
+//				}
+//			}
 			
 		}catch(Exception ex){
 			System.out.println(ex.getMessage());
@@ -280,8 +229,6 @@ public class TestConfig {
 	@Resource(name = "RebateDetailsDao")
 	protected RebateDetailsDao rebateDetailsDao;
 	
-	@Resource(name = "SettingsUsdCurrencyExchangeDao")
-	protected SettingsUsdCurrencyExchangeDao settingsUsdCurrencyExchangeDao;
 	
 	@Resource(name = "RebateDao")
 	protected RebateDao rebateDao;
