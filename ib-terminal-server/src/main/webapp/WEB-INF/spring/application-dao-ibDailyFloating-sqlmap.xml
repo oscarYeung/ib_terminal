@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbDailyFloatingDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_daily_floating
+					(ib_code, account_number, trade_date, floating_pnl, swap, commission, profit, pnl_adj, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_daily_floating SET floating_pnl = ?, swap = ?, commission = ?, profit = ?, pnl_adj = ?, last_update_time = now(), last_update_user = ?
+					WHERE ib_code = ? AND account_number = ? AND trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_daily_floating
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_daily_floating WHERE ib_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_daily_floating WHERE ib_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+				<entry key="deleteByTradeDate">
+					<value><![CDATA[
+					DELETE FROM ib_daily_floating WHERE trade_date = ?
+					]]></value>
+				</entry>
+				<entry key="deleteByLessThanTradeDate">
+					<value><![CDATA[
+					DELETE FROM ib_daily_floating WHERE trade_date <= ?
+					]]></value>
+				</entry>
+				<entry key="getFromSAP">
+					<value><![CDATA[
+										
+					SELECT ib_code, account_number, CONVERT(datetime, trade_date, 112) as trade_date, floating_pnl, swap, commission, profit, pnl_adj
+					FROM
+					(
+						SELECT
+							ibs.agent_account AS ib_code
+							,details.account_number AS account_number
+							, CONVERT(varchar(10), details.report_date) AS trade_date
+							,(floating/report_currency_rate - pre_day_floating/pre_report_currency_rate) AS floating_pnl
+							,(day_fixed_swap/report_currency_rate) AS swap
+							,(day_fixed_commission/report_currency_rate) AS commission
+							,(day_fixed_profit/report_currency_rate) AS profit
+							,((day_pl_adjust + day_swap_adjust + day_taxes_adjust +day_commission_adjust)/report_currency_rate) AS pnl_adj
+						FROM
+							HYReport2.dbo.d_daily_balance details
+							JOIN Marketing.dbo.d_trade_account_for_HYCM accounts ON accounts.id=details.trade_account_id
+							JOIN HYReport2.dbo.d_brand brands ON brands.id = accounts.brand_id
+							JOIN HYReport2.dbo.d_ib ibs ON ibs.id=accounts.ib_id
+						WHERE brands.brand_short_name IN ('HYCM', 'HYM', 'PIP', 'KCIC')
+							AND details.report_date = ?
+							AND ibs.agent_account NOT IN ('1000')
+					)A
+					WHERE floating_pnl <> 0 or swap <> 0 or commission <> 0 or profit <> 0 or pnl_adj <> 0;
+					]]></value>
+				</entry>
+				
+				<entry key="getFloatingPNL">
+					<value><![CDATA[
+					select ib_code, sum(floating_pnl) as floating_pnl
+					from ib_daily_floating
+					where trade_date >= ? and trade_date <= ?
+					group by ib_code
+					]]></value>
+				</entry>
+				
+				<entry key="getClientFloatingPNLByTradeDate">
+					<value><![CDATA[
+					select account_number, sum(floating_pnl) as floating_pnl 
+					from ib_daily_floating
+					where trade_date >= ? and trade_date <= ?
+					group by account_number
+					]]></value>
+				</entry>
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="ProductSymbolMapDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO product_symbol_map
+					(last_update_time, end_date, symbol, last_update_user, start_date, product_group, priority)
+					VALUES (?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE product_symbol_map SET last_update_time = now(), end_date = ?, last_update_user = ?, priority = ?
+					WHERE symbol = ? AND start_date = ? AND product_group = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM product_symbol_map
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM product_symbol_map WHERE symbol = ? AND start_date = ? AND product_group = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM product_symbol_map WHERE symbol = ? AND start_date = ? AND product_group = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectCurrentProductGroupList">
+					<value><![CDATA[
+					SELECT 
+					    pgp.product_group
+					FROM
+					    user u
+					        LEFT JOIN
+					    user_product_group_profile upgp ON u.user_code = upgp.user_code
+					        LEFT JOIN
+					    product_group_profile pgp ON pgp.profile_id = upgp.product_group_profile_id
+					WHERE
+					    u.user_code = ? and pgp.spread_type = ?
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

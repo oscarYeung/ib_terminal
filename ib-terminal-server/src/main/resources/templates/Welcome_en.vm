@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script language="javascript" type="text/javascript" src="../newsletter/js/scale.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<body>
+<table width="650" border="0" align="center" cellpadding="0" cellspacing="0" style="font-family:Microsoft Yahei,Arial; font-size:14px;  line-height:140%;">
+  <tr>
+   <td align="right" colspan="10" height="86" width="650" style=" border-bottom:2px solid #e8e8e8;"><img alt="" border="0" height="86" src="http://edm.henyep.com/edm_header/hycm_edm_top_en.gif" usemap="#Map3" width="650" /></td>
+  </tr>
+ <tr bgcolor="#787878" style="color:#FFFFFF; font-size:12px;font-weight:bold; font-family:Microsoft Yahei,Arial;">
+
+  <tr>
+    <td style="padding:10px 20px 0 20px;">
+
+        
+  		<p style="font-family:Microsoft Yahei,Arial; font-size:14px;">Dear ${ib_name}：</p>
+  		
+		<p style="font-family:Microsoft Yahei,Arial; font-size:14px;">
+			We are delighted to welcome you to our IB Partnership program and look forward to building a mutually beneficial business relationship with you.
+			<br />
+			<br />
+			Our partnership program offers you the possibility to earn considerable rewards and share in HYCM's success as we continue to break into new global markets. With 40 years of regulated online trading experience, you can give your clients the benefit of your expertise, backed by a trusted broker. 
+			<br />
+			<br />
+			<strong>Your IB Code and Password...</strong>
+			<br />
+			<br />
+			Your IB code and password are as follows:
+			<br />
+			<br />
+			IB code: ${ib_code}
+			<br />
+			<br />
+			Password: ${password}
+			<br />
+			<br />
+			Log into IB Portal
+			<a href='https://Ib.hycm.com'> here</a>
+			<br />
+			<br />
+			<strong>We're Here to Help...</strong>
+			<br />
+			<br />
+			If you have any questions, please do not hesitate to contact your IB relationship manager or contact us by telephone at +44 208-816-7812 from Monday to Friday 05.00 – 18.00 GMT or via email at 
+			<a href="mailto:accounts@hycm.com">accounts@hycm.com</a>
+			<br />
+			<br />
+			
+		</p>
+		<p style="font-family:Microsoft Yahei,Arial; font-size:14px; color:#666;">
+			Always at your service 
+			<br />
+		
+			<br />
+			<strong style="font-family:Microsoft Yahei,Arial; font-size:14px; color:#900;">HYCM</strong>
+			<br />
+			
+			3rd Floor, 28 Throgmorton Street, London EC2N 2AN, United Kingdom 
+			
+			
+		
+			
+		</p>
+		<br />
+		<p>&nbsp;</p>
+	</td>
+</tr>
+    
+    
+<tr>
+    <td><img src="http://edm.henyep.com/hycm-public/awards_en.jpg" alt="Henyep Capital Markets 2014 &amp; 2015 Awards" width="650" height="128" border="0" usemap="#Map0" title="Henyep Capital Markets 2014 &amp; 2016 Awards" />
+      <map name="Map0" id="Map0">
+        <area shape="circle" coords="255,100,17" href="https://www.facebook.com/hycm" target="_blank" alt="HYCM Facebook – Like Us" />
+        <area shape="circle" coords="295,100,16" href="https://twitter.com/HYCM" target="_blank" alt="HYCM Twitter - Follow Us" />
+        <area shape="circle" coords="337,100,17" href="https://www.linkedin.com/company/hycm" target="_blank" alt="HYCM LinkedIn -  Follow us" />
+        <area shape="circle" coords="378,100,17" href="https://plus.google.com/105072386448167900892" target="_blank" alt="HYCM Google+" />
+        <area shape="circle" coords="418,100,17" href="https://www.youtube.com/channel/UC2lwvQLAJ3iN4LE_39X1u_Q " target="_blank" alt="HYCM YouTube" />
+      </map></td>
+  </tr>
+
+		<tr>
+			<td colspan="10" style="padding: 15px; color: rgb(255, 255, 255); line-height: 120%; font-size: 11px; background-color: rgb(95, 95, 95);"><strong>Risk Warning:</strong>All Forex and CFD trading involves significant risk to your capital. It is possible to lose more than the amount deposited. These products may not be suitable for everyone. You should ensure you understand all of the risks and seek independent advice if necessary.<a href="http://www.hycm.com/en/support/risk-warning"><span style="color: rgb(0, 0, 255);">Risk Warning &amp; Disclaimer</span></a></td>
+		</tr>
+		<tr>
+			<td align="center" bgcolor="#333333" colspan="10" height="60"><span style="color: rgb(255, 255, 255); font-family: Arial, Helvetica, sans-serif; font-size: 11px;">COPYRIGHT&copy; 2017 - HYCM, the trading name of Henyep Capital Markets (UK) Limited. ALL RIGHTS RESERVED.<br />
+			Henyep Capital Markets, 3rd Floor 28 Throgmorton Street, London EC2N 2AN, United Kingdom</span></td>
+		</tr>
+	</tbody>
+</table>
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" style="margin-top: 15px;" width="650">
+	<tbody>
+		<tr>
+			<td>
+			<p><font color="#444444" face="verdana" size="1">This email, including attachments, is confidential and may be legally privileged. If you are not the intended recipient(s), any disclosure, copying, distribution or other use or reliance upon this email, including attachments, is prohibited and may be unlawful. If you have received this email in error please notify the sender by return email, and delete this email and attachments and destroy any copies. Henyep Capital Markets (DIFC) Limited. (regulated by the Dubai Financial Services Authority) does not provide investment or legal advice. If this email, including attachments, contains guidance or expresses a view, this is not to be considered or relied upon as investment or legal advice and it is recommended that you obtain independent professional advice. </font></p>
+			</td>
+		</tr>
+		
+	</tbody>
+</table>
+<map id="Map" name="Map">
+<area alt="FCA License No.: 186171" coords="535,75,640,91" href="https://register.fca.org.uk/ShPo_FirmDetailsPage?id=001b000000MfHH0AAN" shape="rect" target="_blank" title="FCA License No.: 186171" /> 
+<area alt="Login" coords="536,43,635,71" href="https://ib.hycm.com/login.hyml?lang=en_US" shape="rect" target="_blank" title="Login" /> <area alt="Live Chat" coords="424,42,524,72" href="https://ib.hycm.com/login.hyml?lang=en_US" shape="rect" target="_blank" title="Live Chat" /> <area alt="HYCM" coords="15,23,167,82" href="https://ib.hycm.com/login.hyml?lang=en_US" shape="rect" target="_blank" title="HYCM" /></map>
+
+
+<custom name="opencounter" type="tracking"> </custom>
+
+
+</body>
+</html>

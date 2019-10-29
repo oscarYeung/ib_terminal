@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="ClientPackageDetailsDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO client_package_details
+					(client_package_code, base_commission)
+					VALUES (?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE client_package_details SET base_commission = ?
+					WHERE client_package_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM client_package_details
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM client_package_details WHERE client_package_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM client_package_details WHERE client_package_code = ?
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="ClientBalanceSummaryDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO client_balance_summary
+					(client_code, currency, trade_date, balance, equity, floating, deposit, withdrawal, credit, pl, pl_adjustment, commission, swap, tax, previous_credit, previous_balance, previous_equity, previous_floating, last_update_date, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), 'system')
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE client_balance_summary SET balance = ?, currency = ? equity = ?, floating = ?, deposit = ?, withdrawal = ?, credit = ?, pl = ?, pl_adjustment = ?, commission = ?, swap = ?, tax = ?, previous_credit = ?, previous_balance = ?, previous_equity = ?, previous_floating = ?, last_update_date = ?, last_update_user = ?
+					WHERE client_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM client_balance_summary
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM client_balance_summary WHERE client_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM client_balance_summary WHERE client_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="getEquityChange">
+					<value>
+					<![CDATA[
+					Select e-pre_e-net_margin equity_change_1 , f-pre_f+net_pl equity_change_2 , 
+						e equity, pre_e previous_equity, 
+						f floating, pre_f previous_floating, net_pl , net_margin
+					FROM 
+					(
+						SELECT SUM(equity-credit) e, sum(previous_equity-previous_credit)pre_e,SUM(deposit + withdrawal) net_margin,
+								sum(floating) f, SUM(previous_floating) pre_f, SUM(pl + commission + swap + tax +pl_adjustment) net_pl
+ 						FROM client_balance_summary clt, ib_client_map ibClt
+ 						WHERE 
+ 							clt.client_code = ibClt.client_code and 
+ 							clt.trade_date >= ? and clt.trade_date <= ? and
+  							ibClt.ib_code in 
+							(
+								SELECT node.ib_code
+								FROM ib_tree AS node, ib_tree AS parent
+								WHERE
+									node.min_id BETWEEN parent.min_id AND parent.max_id
+									AND parent.ib_code = ?
+									AND parent.start_date <= ?
+									AND (parent.end_date >= ? OR parent.end_date is null)
+									AND (node.end_date >= ?  OR node.end_date is null)
+							)		
+					) a 
+					]]>
+					</value>
+				</entry>
+				
+				<entry key="getDeficit">
+					<value><![CDATA[	
+						SELECT 
+							trade_date , sum(equity-credit) deficit from client_balance_summary clt, ib_client_map ibClt
+						WHERE 
+							clt.equity-clt.credit < 0 AND
+							clt.client_code = ibClt.client_code AND     
+							(clt.trade_date = (Select max(trade_date) from client_balance_summary where trade_date < ? ) OR 
+    						clt.trade_date =(Select max(trade_date) from client_balance_summary where trade_date <= ? )) AND
+    						ibClt.ib_code IN 
+							(
+								SELECT node.ib_code
+								FROM ib_tree AS node, ib_tree AS parent
+								WHERE
+									node.min_id BETWEEN parent.min_id AND parent.max_id
+									AND parent.ib_code = ?
+									AND parent.start_date <= ?
+									AND (parent.end_date >= ? OR parent.end_date is null)
+									AND (node.end_date >= ?  OR node.end_date is null)
+							)		
+						GROUP BY trade_date
+						ORDER BY trade_date					
+					]]></value>
+				</entry>
+				
+				<entry key="getFromSAP">
+					<value><![CDATA[
+						SELECT * FROM (
+							SELECT ROW_NUMBER() OVER(PARTITION BY trade.account_number ORDER BY trade.version DESC) AS row_num, trade.account_number AS client_code, balance.currency AS currency, balance.value_date AS trade_date, balance.balance AS balance, balance.equity AS equity, balance.floating AS floating, balance.day_deposit AS deposit,			
+								balance.day_withdrawal AS withdrawal, balance.credit AS credit, balance.day_fixed_profit AS pl, balance.day_pl_adjust AS pl_adjustment, balance.day_fixed_commission AS commission, balance.day_fixed_swap AS swap,			
+								balance.day_fixed_taxes AS tax, balance.pre_day_credit AS previous_credit, balance.pre_day_balance AS previous_balance, balance.pre_day_equity AS previous_equity, balance.pre_day_floating AS previous_floating
+							FROM d_daily_balance balance 
+							INNER JOIN d_trade_account trade ON balance.trade_account_id = trade.id
+							WHERE balance.value_date = ?
+						) t WHERE row_num = 1;
+					]]></value>
+				</entry>
+				
+				<entry key="deleteByTradeDate">
+					<value><![CDATA[
+						DELETE FROM client_balance_summary where trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="deleteByLessThanTradeDate">
+					<value><![CDATA[
+						DELETE FROM client_balance_summary where trade_date <= ?
+					]]></value>
+				</entry>
+				
+				
+				<entry key="getGroupEquityChangeFromSAP">
+					<value><![CDATA[
+						SELECT 	SUM(balances.equity-balances.credit - balances.pre_day_equity + balances.pre_day_credit - balances.day_deposit - balances.day_withdrawal) equity_change_1,
+		 						SUM(balances.floating - balances.pre_day_floating +balances.day_pl_adjust+balances.day_fixed_commission+ day_fixed_profit+day_fixed_swap) equity_change_2,
+		 						SUM(balances.equity-balances.credit) equity,
+		 						SUM(balances.pre_day_equity - balances.pre_day_credit) previous_equity,
+								SUM(balances.day_deposit + balances.day_withdrawal) net_margin,
+								SUM(balances.day_pl_adjust+balances.day_fixed_commission+ day_fixed_profit+day_fixed_swap) net_pl,
+								SUM(balances.floating) floating,SUM(balances.pre_day_floating) previous_floating,
+								groups.group_code
+						FROM d_daily_balance balances
+							JOIN d_trade_account accounts ON balances.trade_account_id=accounts.id
+							JOIN d_business_group groups ON groups.id=accounts.business_group_id
+						WHERE balances.value_date>= ? and balances.value_date<= ?
+							#CUSTOM#							
+						GROUP BY groups.group_code;		
+					]]></value>
+				</entry>
+				
+				<entry key="getGroupDeficitFromSAP">
+					<value><![CDATA[
+						SELECT 
+							groups.group_code , balances.value_date trade_date, sum(round(equity-credit, 2)) deficit
+						FROM d_daily_balance balances
+							JOIN d_trade_account accounts ON balances.trade_account_id=accounts.id
+							JOIN d_business_group groups ON groups.id=accounts.business_group_id
+						WHERE 
+							balances.value_date in ((Select max(value_date) from d_daily_balance where value_date <= ?) ,(Select max(value_date) from d_daily_balance where value_date <= ?))
+							and equity-credit < 0 
+							#CUSTOM#							
+						GROUP BY groups.group_code , balances.value_date;
+
+					]]></value>
+				</entry>
+				
+				<entry key="getGroupClientTradeFromSAP">
+					<value><![CDATA[
+						SELECT groups.group_code, details.account_number client_code, details.symbol_name symbol, sum(details.volume) total_lot 
+						FROM d_trade_detail details
+							JOIN d_trade_account accounts ON details.trade_account_id=accounts.id
+							JOIN d_business_group groups ON groups.id=accounts.business_group_id
+						WHERE details.value_date>=? and details.value_date<=?
+							#CUSTOM# 
+							and details.trade_type_id in (1005,1006) 
+						GROUP BY groups.group_code , details.account_number, details.symbol_name 
+						ORDER BY groups.group_code, details.account_number;
+					]]></value>
+				</entry>			
+				
+				<entry key="updateAccountBalance">
+					<value><![CDATA[
+						UPDATE client_balance_summary SET balance = ?, last_update_user = ? WHERE client_code = ? ORDER BY trade_date DESC LIMIT 1;
+					]]></value>
+				</entry>	
+				
+				<entry key="getlatestClientBalanceSummaryByClientCode">
+					<value><![CDATA[
+						SELECT * FROM client_balance_summary WHERE client_code = ? AND trade_date = (SELECT MAX(trade_date) FROM client_balance_summary);
+					]]></value>
+				</entry>	
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

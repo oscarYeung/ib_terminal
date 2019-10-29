@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="ClientDailySummaryDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO client_daily_summary
+					(client_code, trade_date, currency, total_lot, total_deposit, total_deposit_usd, total_withdrawal, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE client_daily_summary SET currency = ?, total_lot = ?, total_deposit = ?, total_deposit_usd = ?, total_withdrawal = ?, last_update_time = ?, last_update_user = ?
+					WHERE client_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM client_daily_summary
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM client_daily_summary WHERE client_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM client_daily_summary WHERE client_code = ? AND trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByDateRange">
+					<value><![CDATA[
+					SELECT * FROM client_daily_summary WHERE trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

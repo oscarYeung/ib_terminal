@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbClientRebateMapDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_client_rebate_map
+					(brand_code, ib_code, client_code, rebate_code, start_date, end_date, last_update_user, last_update_time)
+					VALUES (?, ?, ?, ?, ?, ?, ?, now())
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_client_rebate_map SET last_update_time = now(), end_date = ?, rebate_code = ?, last_update_user = ?
+					WHERE client_code = ? AND ib_code = ? AND start_date = ? AND brand_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_client_rebate_map
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_client_rebate_map WHERE client_code = ? AND ib_code = ? AND start_date = ? AND brand_code = ?
+					]]></value>
+				</entry>
+				<entry key="selectByIbCodeWithDateRange">
+					<value><![CDATA[
+					SELECT * FROM ib_client_rebate_map WHERE brand_code = ? AND ib_code = ? AND start_date <= ? AND (end_date >= ? OR end_date is null)
+					]]></value>
+				</entry>		
+				<entry key="selectByRebateCodeWithDateRange">
+					<value><![CDATA[
+					SELECT * FROM ib_client_rebate_map WHERE rebate_code = ? AND start_date <= ? AND (end_date >= ? OR end_date is null)
+					]]></value>
+				</entry>				
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_client_rebate_map WHERE client_code = ? AND ib_code = ? AND start_date = ? AND brand_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="getByRebateCodeListWithDateRange">
+					<value><![CDATA[
+					SELECT * FROM ib_client_rebate_map WHERE start_date <= ? and (end_date >= ? or end_date is null ) and rebate_code in #CUSTOM#					
+					]]></value>
+				</entry>
+				
+				<entry key="getByRebateCodeList">
+					<value><![CDATA[
+					SELECT * FROM ib_client_rebate_map WHERE rebate_code in #CUSTOM#					
+					]]></value>
+				</entry>
+				
+				<entry key="getByIbCode">
+					<value><![CDATA[
+					SELECT * FROM ib_client_rebate_map WHERE ib_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="getIbRebateGroupCodeList">
+					<value><![CDATA[
+					SELECT 
+						p.brand_code , ibClt.ib_code, ibClt.rebate_code, group_code 
+					FROM 
+						ib_client_rebate_map ibClt , rebate_supplementary rebateSupp , ib_profile p 
+					WHERE
+						ibClt.ib_code = p.ib_code AND
+						ibClt.rebate_code = rebateSupp.rebate_code AND
+						group_code !='' AND
+						ibClt.start_date <= ? and (ibClt.end_date >= ? or ibClt.end_date is null) AND
+						rebateSupp.start_date <= ? and (rebateSupp.end_date >=? or rebateSupp.end_date is null)						
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

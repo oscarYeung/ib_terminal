@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="UserDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO user
+					(user_name, last_update_time, status, create_time, user_code, last_update_user, password, brand_code)
+					VALUES (?, ?, now(), ?, null, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE user SET user_name = ?, last_update_time = now(), status = ?, last_update_user = ?, password = ?, brand_code = ?
+					WHERE user_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM user
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM user WHERE user_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM user WHERE user_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectByUserPassword">
+					<value><![CDATA[
+					SELECT * FROM user WHERE user_code = ? AND password = ?
+					]]></value>
+				</entry>
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

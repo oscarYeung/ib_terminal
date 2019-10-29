@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbCommissionDetailsDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_commission_details
+					(brand_code, platform, ticket, ib_code, client_code, client_ib_code, group_code, product_group, spread_type, jurisdiction, trade_date, symbol, buy_sell, lot, currency, deposit, client_fix_commission, client_spread_commission, rebate_commission_lot, rebate_commission_pip, trade_swaps, trade_pl, open_trade_time, close_trade_time, rebate_code, rebate_type_lot, rebate_per_lot, rebate_type_pip, rebate_per_pip, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_commission_details SET rebate_per_lot = ?, client_ib_code = ?,group_code =?, spread_type = ?, jurisdiction = ?, buy_sell = ?, last_update_time = now(), rebate_per_pip = ?, symbol = ?, rebate_code = ?, trade_pl = ?, client_spread_commission = ?, rebate_type_pip = ?, product_group = ?, currency = ?, deposit = ?, rebate_commission_pip = ?, rebate_type_lot = ?, trade_swaps = ?, trade_date = ?, close_trade_time = ?, client_fix_commission = ?, lot = ?, rebate_commission_lot = ?, last_update_user = ?, open_trade_time = ?
+					WHERE platform = ? AND client_code = ? AND ticket = ? AND ib_code = ? AND brand_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_details
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_details WHERE platform = ? AND client_code = ? AND ticket = ? AND ib_code = ? AND brand_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_commission_details WHERE platform = ? AND client_code = ? AND ticket = ? AND ib_code = ? AND brand_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="deleteByDateRange">
+					<value><![CDATA[
+					DELETE FROM ib_commission_details WHERE trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+
+				<entry key="selectByIbCodeClientCodeDateRange">
+					<value><![CDATA[					
+					SELECT  brand_code,platform,ticket,client_code,ib_code, client_ib_code,product_group, symbol, buy_sell,lot,trade_date,open_trade_time,	close_trade_time,trade_pl,currency,client_fix_commission,rebate_commission_pip, rebate_commission_lot 
+					FROM ib_commission_details
+					WHERE 
+						ib_code = ? AND
+						client_code = ? AND 
+						trade_date >= ? AND 
+						trade_date <= ?
+					ORDER BY ticket 
+					]]></value>
+				</entry>
+				<entry key="getSummaryByIbCodeDateRange">
+					<value><![CDATA[
+					SELECT 
+						brand_code, ib_code , currency, sum(client_fix_commission) client_fix_commission, sum(rebate_commission_lot) rebate_commission_lot, sum(rebate_commission_pip) rebate_commission_pip 
+					FROM 
+						ib_commission_details
+					WHERE 
+						ib_code = ? AND trade_date >= ? AND trade_date <= ?
+					GROUP BY 
+						ib_code, brand_code, currency
+					]]></value>
+				</entry>
+				
+				<entry key="getSummaryWithGroupCodeByIbCodeDateRange">
+					<value><![CDATA[
+					SELECT 
+						brand_code, ib_code , group_code, currency, sum(client_fix_commission) client_fix_commission, sum(rebate_commission_lot) rebate_commission_lot, sum(rebate_commission_pip) rebate_commission_pip 
+					FROM 
+						ib_commission_details
+					WHERE 
+						 trade_date >= ? AND trade_date <= ? and group_code is not NULL
+						 #CUSTOM#						 
+					GROUP BY 
+						  brand_code, ib_code, group_code , currency
+					]]></value>
+				</entry>
+				
+
+				<entry key="selectByBrandCodeIbCode">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_details WHERE trade_date >= ? AND trade_date <= ? AND brand_code = ?
+					AND ib_code in 
+						(
+							-- get ib code from ib_tree
+							SELECT B.ib_code
+							FROM ib_tree A
+							LEFT JOIN ib_tree B
+							ON B.min_id >= A.min_id AND B.max_id <= A.max_id
+							where A.id in 
+							(
+								#team_head_ids
+							)
+						) AND ib_code in (#ibCodes)
+					 ORDER BY brand_code, ib_code
+					]]></value>
+				</entry>
+				
+				<entry key="getIbRebateReport">
+					<value><![CDATA[
+						call usp_report_ib_rebate(?,?,?,?,?);
+					]]></value>
+				</entry>
+				
+				<entry key="getIbTradeAmountReport">
+					<value><![CDATA[
+						call usp_report_ib_trade_amount(?,?,?,?,?);
+					]]></value>
+				</entry>
+				
+				<entry key="getIbMarginInOutReport">
+					<value><![CDATA[
+						call usp_report_ib_margin_in_out(?,?,?,?,?);
+					]]></value>
+				</entry>
+				
+				<entry key="getClientMarginInOutReport">
+					<value><![CDATA[
+						call usp_report_client_margin_in_out(?,?,?,?,?);
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

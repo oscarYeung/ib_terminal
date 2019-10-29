@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+					    http://www.springframework.org/schema/context
+					    http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<import resource="application-dao-clientDetails-sqlmap.xml"/>
+	<import resource="application-dao-externalMt4Client-sqlmap.xml"/>
+	<import resource="application-dao-ibAccountDetails-sqlmap.xml"/>
+	<import resource="application-dao-ibAccountDetailsHistory-sqlmap.xml"/>
+	<import resource="application-dao-ibClientMap-sqlmap.xml"/>
+	<import resource="application-dao-ibClientRebateMap-sqlmap.xml"/>
+	<import resource="application-dao-ibCommissionClientSummary-sqlmap.xml"/>
+	<import resource="application-dao-ibCommissionDetails-sqlmap.xml"/>
+	<import resource="application-dao-ibCommissionDetailsSupplementary-sqlmap.xml"/>
+	<import resource="application-dao-ibCommissionSummary-sqlmap.xml"/>
+	<import resource="application-dao-ibProfile-sqlmap.xml"/>
+	<import resource="application-dao-ibProfileHistory-sqlmap.xml"/>
+	<import resource="application-dao-ibTradingAccountMap-sqlmap.xml"/>
+	<import resource="application-dao-ibTree-sqlmap.xml"/>
+	<import resource="application-dao-marginIn-sqlmap.xml"/>
+	<import resource="application-dao-marginOut-sqlmap.xml"/>
+	<import resource="application-dao-productSymbolMap-sqlmap.xml"/>
+	<import resource="application-dao-rebate-sqlmap.xml"/>
+	<import resource="application-dao-rebateDetails-sqlmap.xml"/>
+	<import resource="application-dao-rebateSupplementary-sqlmap.xml"/>
+	<import resource="application-dao-settingsCfd-sqlmap.xml"/>
+	<import resource="application-dao-settingsMt4Group-sqlmap.xml"/>
+	<import resource="application-dao-settingsPointValue-sqlmap.xml"/>
+	<import resource="application-dao-tradeDetail-sqlmap.xml"/>
+	<import resource="application-dao-user-sqlmap.xml"/>
+	<import resource="application-dao-ibClientLink-sqlmap.xml"/>
+    <import resource="application-dao-sqlmap.xml"/>
+   	<import resource="applicationContext.xml"/>
+   	<import resource="application-mailServer.xml"/>
+   	<import resource="application-dao-clientMarginInOut-sqlmap.xml"/>
+   	<import resource="application-dao-bonus-sqlmap.xml"/>
+   	<import resource="application-dao-bonusDetails-sqlmap.xml"/>
+   	<import resource="application-dao-clientBalanceSummary-sqlmap.xml"/>
+   	<import resource="application-dao-clientPackageDetails-sqlmap.xml"/>
+   	<import resource="application-dao-clientTradeDetails-sqlmap.xml"/>
+   	<import resource="application-dao-ibBonusMap-sqlmap.xml"/>
+   	<import resource="application-dao-scheduleTask-sqlmap.xml"/>
+   	<import resource="application-dao-ibLead-sqlmap.xml"/>
+   	<import resource="application-dao-settingsSymbol-sqlmap.xml"/>
+   	<import resource="application-dao-systemParams-sqlmap.xml"/>
+   	<import resource="application-dao-userPermissions-sqlmap.xml"/>
+   	<import resource="application-dao-userRoles-sqlmap.xml"/>
+   	<import resource="application-dao-permission-sqlmap.xml"/>
+   	<import resource="application-dao-role-sqlmap.xml"/>
+   	<import resource="application-dao-rolePermissions-sqlmap.xml"/>
+   	<import resource="application-dao-clientGroupMapping-sqlmap.xml"/>
+   	<import resource="application-dao-clientDailySummary-sqlmap.xml"/>
+   	<import resource="application-dao-rebateCpa-sqlmap.xml"/>
+   	<import resource="application-dao-ibCommissionCpa-sqlmap.xml"/>
+   	<import resource="application-dao-openTrade-sqlmap.xml"/>
+	<import resource="application-dao-ibDailyFloating-sqlmap.xml"/>
+	<import resource="application-dao-settingsUsdCurrencyExchange-sqlmap.xml"/>
+   	
+   	
+    <context:component-scan base-package="com.henyep.ib.terminal.server" />
+    
+</beans>

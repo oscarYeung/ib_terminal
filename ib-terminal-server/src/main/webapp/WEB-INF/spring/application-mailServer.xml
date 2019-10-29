@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+
+
+	<bean id="mailServer"
+		class="com.henyep.ib.terminal.server.mail.MailServerConfig">
+		<property name="auth">
+			<value>true</value>
+		</property>
+		<property name="connect_timeout">
+			<value>60000</value><!-- unit ms -->
+		</property>
+		<property name="send_timeout">
+			<value>60000</value><!-- unit ms -->
+		</property>
+		<property name="debug">
+			<value>false</value>
+		</property>
+		<property name="host">
+			<value>mail.henyep.com</value>
+		</property>
+		<property name="port">
+			<value>25</value>
+		</property>
+		<property name="user">
+			<value>jm.zhang@cn.henyep.com</value>
+		</property>
+		<property name="password">
+			<value>Zjm##@@1111</value>
+		</property>
+		<property name="formAddressAlias">
+			<value>IB_TERMINAL_EMAIL</value>
+		</property>
+		<property name="fromAddress">
+			<value>jm.zhang@cn.henyep.com</value>
+		</property>
+	</bean>
+</beans>

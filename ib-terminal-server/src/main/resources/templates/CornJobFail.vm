@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <h3>Fail to run corn job</h3>
+ 
+        <div>
+        	Host: ${Host}
+        	<br/>
+            Time: ${Time}
+            <br/>
+            Details:<br/> 
+            ${Content}
+        </div>        
+    </body>
+</html>

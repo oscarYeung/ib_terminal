@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="ClientDetailsDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO client_details
+					(first_name, sex, email, trading_platform, last_name, account_balance, currency, mobile, chinese_name, client_trading_id, mt4_group, register_date, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE client_details SET first_name = ?, last_update_time = now(), sex = ?, email = ?, trading_platform = ?, last_name = ?, last_update_user = ?, account_balance = ?, currency = ?, mobile = ?, chinese_name = ?
+					WHERE client_trading_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM client_details
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT cd.client_trading_id, cd.first_name, cd.last_name, cd.chinese_name, cd.email, cd.trading_platform, cd.sex,
+						cd.mobile, cd.currency, ifnull(cbs.balance, 0) as account_balance, cd.last_update_time, cd.last_update_user FROM client_details cd
+					LEFT JOIN
+						(SELECT client_code, balance from client_balance_summary WHERE client_code = ? order by trade_date desc limit 1) cbs
+					ON cbs.client_code = cd.client_trading_id
+					WHERE cd.client_trading_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM client_details WHERE client_trading_id = ?
+					]]></value>
+				</entry>
+				
+				<!--
+					## getIbClientAccounts ##
+					SELECT icm.client_code, IFNULL(cbs.balance, 0) as balance, cd.trading_platform, cd.currency, cbs.trade_date, cbs.row_number
+						FROM ib_client_map icm 
+						LEFT JOIN client_details cd ON cd.client_trading_id = icm.client_code
+						LEFT JOIN 
+							(
+								Select client_code, balance , trade_date from client_balance_summary where trade_date = (Select mRax(trade_date) from client_balance_summary )
+							)cbs ON cbs.client_code = icm.client_code
+					WHERE icm.ib_code = ? AND (cbs.row_number = 1 OR cbs.row_number IS NULL)				
+				 -->
+					
+				
+				
+				<entry key="getIbClientAccounts">
+					<value><![CDATA[
+										
+					Select icm.client_code, cbs.balance balance , cd.trading_platform ,cd.currency, cbs.trade_date
+					FROM 
+						ib_client_map icm, client_details cd , client_balance_summary cbs, 
+					    (
+							SELECT A.client_code, max(A.trade_date) as max_trade_date from client_balance_summary A
+							RIGHT JOIN 
+							(
+								select * from ib_client_map 
+								where ib_code = ? 
+									AND start_date <= CURDATE() 
+									AND (end_date is null OR end_date >= CURDATE())
+							) B ON A.client_code = B.client_code
+							group by B.client_code
+						)C
+					WHERE
+						icm.client_code = cd.client_trading_id and 
+						icm.client_code = cbs.client_code and 
+					    icm.client_code = C.client_code and
+						icm.ib_code = ? and
+						cbs.trade_date = C.max_trade_date and
+						icm.start_date <= curdate() and
+						(icm.end_date is null or icm.end_date >= curdate())
+					ORDER BY cbs.balance desc;
+										
+					
+					]]></value>
+				</entry>
+				
+				<entry key="clearClientDetails">
+					<value><![CDATA[
+						DELETE FROM client_details
+					]]></value>
+				</entry>
+				
+				<entry key="getClientDetailsFromSAP">
+					<value><![CDATA[
+					
+						SELECT t.account_number AS client_trading_id, m.[group] as mt4_group, c.name AS first_name, c.username AS last_name, c.middlename AS chinese_name, c.email AS email,
+							CASE WHEN t.account_identify = 401 OR t.account_identify = 403 THEN 'MT4' when t.account_identify = 411 then 'MT5' ELSE 'STAR' END AS trading_platform,  
+							CASE WHEN gender_id = 100003 THEN 'm' ELSE 'f' END AS sex, 'system' AS last_update_user,
+							c.phone AS mobile, currency, 0 AS account_balance,
+							c.register_date
+						FROM 
+						(
+							SELECT ROW_NUMBER() OVER(PARTITION BY client_current_id ORDER BY version DESC) as row_num, id, name, username, middlename, email, phone, gender_id, register_date
+								FROM d_client 
+								WHERE ib_id IS NOT NULL
+						) c
+						LEFT JOIN 
+						(
+							SELECT ROW_NUMBER() OVER( PARTITION BY trade_account_current_id ORDER BY version DESC) as row_num , client_id, account_number, account_identify, currency
+							FROM d_trade_account 
+							WHERE account_identify in (401, 403, 410, 411)
+								AND ib_id IS NOT NULL
+								AND isdelete = 0
+						)t ON t.client_id = c.id
+						LEFT JOIN
+						(
+							SELECT account_number, [group] COLLATE database_default as 'group' FROM [SAP_Source].[dbo].[t_mt4_accounts]	
+							UNION ALL
+							SELECT account_number, [group] COLLATE database_default as 'group' FROM [MT5Live].[dbo].[t_mt5_accounts]		
+						) m ON m.account_number = t.account_number
+						
+						WHERE t.row_num = 1 AND c.row_num = 1 
+						ORDER BY t.account_number;
+					]]></value>
+				</entry>
+				
+				<entry key="searchMyClients">
+					<value><![CDATA[
+					SELECT A.ib_code, A.client_code AS trading_id, CD.first_name AS client_name, 
+					IFNULL(cbs.balance, 0) AS balance, IFNULL(cbs.equity, 0) AS equity, cbs.trade_date, cbs.currency,
+					CASE WHEN A.ib_code = ? THEN CD.mobile ELSE '' END AS phone_no, 
+					CASE WHEN A.ib_code = ? THEN CD.email ELSE '' END AS email, CD.register_date AS join_date
+					FROM (
+						SELECT client_code, ib_code FROM ib_client_map 
+						WHERE ib_code IN (
+							SELECT ib_code FROM ib_tree 
+							WHERE min_id >= (SELECT min_id FROM ib_tree WHERE ib_code = ? and end_date is null)
+								AND max_id <= (SELECT max_id FROM ib_tree WHERE ib_code = ? and end_date is null)
+						) AND start_date <= NOW() AND (end_date IS NULL || end_date >= NOW())
+					) A 
+					LEFT JOIN client_details CD ON A.client_code = CD.client_trading_id
+					LEFT JOIN 
+					(
+						SELECT cbs1.client_code, cbs1.trade_date, cbs1.balance, cbs1.equity, cbs1.currency FROM client_balance_summary cbs1
+						RIGHT JOIN 
+						(
+							SELECT client_code, MAX(trade_date) AS max_trade_date FROM client_balance_summary GROUP BY client_code
+						)cbs2 ON cbs1.client_code = cbs2.client_code AND cbs1.trade_date = cbs2.max_trade_date
+					) cbs ON A.client_code = cbs.client_code
+				]]></value>
+				</entry>
+				
+				<entry key="selectManuallyAddClientDetails">	
+					<value><![CDATA[
+					SELECT * FROM client_details WHERE last_update_user <> 'system';
+					]]></value>
+				</entry>
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

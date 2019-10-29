@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbAccountDetailsDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_account_details
+					(day_open, last_update_time, month_to_date, year_to_date, net_margin_bonus, last_update_user, ib_code, account_balance, pending_commission, currency, day_open_pending_commission)
+					VALUES (?, now(), ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_account_details SET day_open = ?, last_update_time = now(), month_to_date = ?, year_to_date = ?, net_margin_bonus = ?, last_update_user = ?, account_balance = ?, pending_commission = ?, day_open_pending_commission = ?
+					WHERE ib_code = ? AND currency = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_account_details
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_account_details WHERE ib_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_account_details WHERE ib_code = ? AND currency = ?
+					]]></value>
+				</entry>
+				
+				<entry key="resetPendingCommission">
+					<value><![CDATA[
+					UPDATE ib_account_details SET pending_commission = day_open_pending_commission WHERE ib_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="resetPendingCommissions">
+					<value><![CDATA[
+					UPDATE 
+						ib_account_details A
+					    RIGHT JOIN
+							(
+								SELECT brand_code, account, SUM(amount) AS amount 
+					            FROM margin_in 
+					            WHERE status = 'P' AND trade_date = ? AND {IB_FILTER}
+					            GROUP BY account, brand_code
+							) B
+					    ON A.ib_code = B.account
+					SET 
+						A.pending_commission = A.pending_commission - B.amount, last_update_time = now(); 
+					]]></value>
+				</entry>
+				
+				<entry key="resetAccountBalance">
+					<value><![CDATA[
+					UPDATE 
+						ib_account_details A
+					    RIGHT JOIN
+							(
+								SELECT brand_code, account, SUM(amount) AS amount 
+					            FROM margin_in 
+					            WHERE status = 'E' AND trade_date = ? AND {IB_FILTER}
+					            GROUP BY account, brand_code
+							) B
+					    ON A.ib_code = B.account
+					SET 
+						A.account_balance = A.account_balance - B.amount, last_update_time = now(); 
+					]]></value>
+				</entry>
+				
+				<entry key="updateAccountBalanceByMarginOutBatchFileId">
+					<value><![CDATA[
+					UPDATE ib_account_details A
+						RIGHT JOIN 
+						(SELECT account, SUM(account_amount) AS amount FROM margin_out WHERE batch_file_id = ? and status = ? GROUP BY account) B
+						ON A.ib_code = B.account
+						SET account_balance = account_balance - B.amount;
+					
+					]]></value>
+				</entry>
+				
+				<entry key="selectIbAccountSummary">
+					<value><![CDATA[
+					SELECT ib_code, currency, account_balance FROM ib_account_details WHERE ib_code = ?
+					
+					]]></value>
+				</entry>
+				
+				<entry key="updateAccumlatedNetMargin">
+					<value><![CDATA[
+					UPDATE ib_account_details SET net_margin_bonus = ? WHERE ib_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="updateDayOpen">
+					<value><![CDATA[
+					UPDATE ib_account_details SET day_open = account_balance, day_open_pending_commission = pending_commission, last_update_time = now()
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

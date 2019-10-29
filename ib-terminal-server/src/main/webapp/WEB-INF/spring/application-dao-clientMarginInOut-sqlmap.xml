@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="ClientMarginInOutDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO client_margin_in_out
+					(amount, amountUsd, client_code, platform, trade_date, comment, trade_type_id, order_id, currency, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE client_margin_in_out SET amount = ?, amountUsd = ?, client_code = ?, terminal = ?, value_date = ?, comment = ?, trade_type_id = ?, currency = ?, last_update_time = ?, last_update_user = ?
+					WHERE order_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM client_margin_in_out
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM client_margin_in_out WHERE order_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM client_margin_in_out WHERE order_id = ?
+					]]></value>
+				</entry>
+				
+				<entry key="deleteByTradeDate">
+					<value><![CDATA[
+					DELETE FROM client_margin_in_out WHERE trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByDateRange">
+					<value><![CDATA[
+					SELECT * FROM client_margin_in_out WHERE trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByIbCodeDateRange">
+					<value><![CDATA[
+					SELECT * FROM client_margin_in_out WHERE trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectGroupByDate">
+					<value><![CDATA[
+					SELECT trade_date, sum(amount) as amount FROM client_margin_in_out 
+					WHERE client_code = ? AND trade_date >= ? AND trade_date <= ? 
+					GROUP BY trade_date
+					]]></value>
+				</entry>
+
+				<entry key="getByIbCode">
+					<value><![CDATA[
+						SELECT clt.* FROM client_margin_in_out clt, ib_client_map ib 
+						WHERE clt.client_code = ib.client_code and ib_code = ? and clt.trade_date >= ? and clt.trade_date <= ?
+						and 
+						(
+							clt.trade_date >= ib.start_date AND
+						    (
+								ib.end_date IS NULL OR
+								clt.trade_date <= ib.end_date
+						    )
+						)
+						ORDER BY trade_date, client_code;
+					]]></value>
+				</entry>
+				
+				<entry key="getByClientCode">
+					<value><![CDATA[
+						SELECT clt.* FROM client_margin_in_out clt, ib_client_map ib 
+						WHERE clt.client_code = ib.client_code and ib_code = ? and clt.client_code = ? and clt.trade_date >= ? and clt.trade_date <= ?
+						and 
+						(
+							clt.trade_date >= ib.start_date AND
+						    (
+								ib.end_date IS NULL OR
+								clt.trade_date <= ib.end_date
+						    )
+						)
+						ORDER BY trade_date, client_code;
+					]]></value>
+				</entry>
+				
+				<entry key="sap_selectClientMarginByTradeDate">
+					<value><![CDATA[
+					SELECT 
+						case when terminal = 'MT5 Trader' then deal_id else order_id end as order_id,
+						account_number AS client_code,
+						ISNULL(terminal, '') AS platform,
+						trade_currency as currency,
+						profit as amount,
+						profit / report_currency_rate as amountUsd,
+						comment,
+						trade_type_id,
+						value_date as trade_date,
+						GETDATE() as last_update_time,
+						'system' as last_update_user
+					FROM d_trade_detail
+					WHERE trade_type_id IN (1001, 1002, 1003, 1004) AND
+					value_date = ?
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

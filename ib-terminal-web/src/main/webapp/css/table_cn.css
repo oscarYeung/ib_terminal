@@ -1,0 +1,129 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/*============Client Margin In/Out==========*/
+@media only screen and (max-width: 760px){
+    .details-table.client-margin-InOut td:nth-of-type(1):before { content: "客户编码"; }
+    .details-table.client-margin-InOut td:nth-of-type(2):before { content: "交易日期"; }
+    .details-table.client-margin-InOut td:nth-of-type(3):before { content: "货币"; }
+    .details-table.client-margin-InOut td:nth-of-type(4):before { content: "金额"; }
+}
+
+
+/*============Client Trade History==========*/
+@media only screen and (max-width: 760px){	
+    .details-table.client-trade td:nth-of-type(1):before { content: "单号"; }
+    .details-table.client-trade td:nth-of-type(2):before { content: "客户编码"; }
+    .details-table.client-trade td:nth-of-type(3):before { content: "产品代码"; }
+    .details-table.client-trade td:nth-of-type(4):before { content: "买入/卖出"; }
+    .details-table.client-trade td:nth-of-type(5):before { content: "笔"; }
+    .details-table.client-trade td:nth-of-type(6):before { content: "开仓时间"; }
+    .details-table.client-trade td:nth-of-type(7):before { content: "平仓时间"; }
+    .details-table.client-trade td:nth-of-type(8):before { content: "开仓价格"; }
+    .details-table.client-trade td:nth-of-type(9):before { content: "平仓价格"; }
+    .details-table.client-trade td:nth-of-type(10):before { content: "盈/亏"; }
+    .details-table.client-trade td:nth-of-type(11):before { content: "佣金"; }
+    .details-table.client-trade td:nth-of-type(12):before { content: "隔夜利息"; }
+}
+
+/*============Commission Summary==========*/
+@media only screen and (max-width: 760px){
+    .details-table.summary-table td:nth-of-type(1):before { content: ""; }
+    .details-table.summary-table td:nth-of-type(2):before { content: "佣金"; }
+    .details-table.summary-table td:nth-of-type(3):before { content: "返佣"; }
+    .details-table.summary-table td:nth-of-type(4):before { content: "总的笔数"; }
+    .details-table.summary-table td:nth-of-type(5):before { content: "净入金"; }
+    .details-table.summary-table td:nth-of-type(6):before { content: "入金"; }
+    .details-table.summary-table td:nth-of-type(7):before { content: "出金"; }
+
+
+    .details-table.summary-table2 td:nth-of-type(1):before { content: ""; }
+    .details-table.summary-table2 td:nth-of-type(2):before { content: "组别"; }
+    .details-table.summary-table2 td:nth-of-type(3):before { content: "Ev 佣金"; }
+    .details-table.summary-table2 td:nth-of-type(4):before { content: "Ev %"; }
+    .details-table.summary-table2 td:nth-of-type(5):before { content: "净值变化"; }
+    .details-table.summary-table2 td:nth-of-type(6):before { content: "固定佣金"; }
+    .details-table.summary-table2 td:nth-of-type(7):before { content: "返佣"; }
+    .details-table.summary-table2 td:nth-of-type(8):before { content: "赤字"; }
+    .details-table.summary-table2 td:nth-of-type(9):before { content: "信用卡手续费"; }
+    .details-table.summary-table2 td:nth-of-type(10):before { content: "存款赠金"; }
+    .details-table.summary-table2 td:nth-of-type(11):before { content: "净入金奖金"; }
+
+
+    .details-table.commisDetails-table td:nth-of-type(1):before { content: "代理编码"; }
+	.details-table.commisDetails-table td:nth-of-type(2):before { content: "名字"; }
+    .details-table.commisDetails-table td:nth-of-type(3):before { content: "净入金"; }
+    .details-table.commisDetails-table td:nth-of-type(4):before { content: "佣金"; }
+    .details-table.commisDetails-table td:nth-of-type(5):before { content: "返佣"; }
+    .details-table.commisDetails-table td:nth-of-type(6):before { content: "总的笔数(子代理)"; }
+    .details-table.commisDetails-table td:nth-of-type(7):before { content: "盈/亏(子代理)"; }
+    .details-table.commisDetails-table td:nth-of-type(8):before { content: "推荐佣金"; }
+    .details-table.commisDetails-table td:nth-of-type(9):before { content: "推荐反佣"; }
+	
+	.details-table.commission-summary-table td:nth-of-type(1):before { content: "客户"; }
+    .details-table.commission-summary-table td:nth-of-type(2):before { content: "总的笔数"; }
+    .details-table.commission-summary-table td:nth-of-type(3):before { content: "净入金"; }
+    .details-table.commission-summary-table td:nth-of-type(4):before { content: "盈/亏"; }
+    .details-table.commission-summary-table td:nth-of-type(5):before { content: "佣金"; }
+    .details-table.commission-summary-table td:nth-of-type(6):before { content: "返佣"; }
+
+		
+	/*.details-table.commission-ClientName-table td:nth-of-type(1):before { content: "客户编码"; }
+    .details-table.commission-ClientName-table td:nth-of-type(2):before { content: "名字"; }*/
+
+	.details-table.commission-ClientDeatils-table td:nth-of-type(1):before { content: "日期"; }
+    .details-table.commission-ClientDeatils-table td:nth-of-type(2):before { content: "净入金"; }
+}
+
+
+/* =======Commission Enquiry======*/
+@media only screen and (max-width: 760px){
+	.details-table.per-summary-table td:nth-of-type(1):before { content: "代理编码"; }
+    .details-table.per-summary-table td:nth-of-type(2):before { content: "产品"; }
+    .details-table.per-summary-table td:nth-of-type(3):before { content: "总的笔数"; }
+    .details-table.per-summary-table td:nth-of-type(4):before { content: "货币"; }
+    .details-table.per-summary-table td:nth-of-type(5):before { content: "佣金"; }
+    .details-table.per-summary-table td:nth-of-type(6):before { content: "返佣"; }
+    .details-table.per-summary-table td:nth-of-type(7):before { content: "全部"; }
+
+    .details-table.per-ClientSummary-table td:nth-of-type(1):before { content: "客户编码"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(2):before { content: "产品"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(3):before { content: "总的笔数"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(4):before { content: "货币"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(5):before { content: "佣金"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(6):before { content: "返佣"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(7):before { content: "全部"; }
+
+    .details-table.per-Detaile-table td:nth-of-type(1):before { content: "客户代理编码"; }
+    .details-table.per-Detaile-table td:nth-of-type(2):before { content: "产品"; }
+    .details-table.per-Detaile-table td:nth-of-type(3):before { content: "总的笔数"; }
+    .details-table.per-Detaile-table td:nth-of-type(4):before { content: "货币"; }
+    .details-table.per-Detaile-table td:nth-of-type(5):before { content: "佣金"; }
+    .details-table.per-Detaile-table td:nth-of-type(6):before { content: "返佣"; }
+    .details-table.per-Detaile-table td:nth-of-type(7):before { content: "交易盈/亏"; }
+
+}
+
+
+/* =======Withdrawal======*/
+@media only screen and (max-width: 760px){	
+	.details-table.withdrawal-table td:nth-of-type(1):before { content: "请求日期"; }
+    .details-table.withdrawal-table td:nth-of-type(2):before { content: "货币"; }
+    .details-table.withdrawal-table td:nth-of-type(3):before { content: "金额请求"; }
+    .details-table.withdrawal-table td:nth-of-type(4):before { content: "状态"; }
+    .details-table.withdrawal-table td:nth-of-type(5):before { content: ""; }
+}
+
+
+/* =======My Lead======*/
+@media only screen and (max-width: 760px){
+    .details-table.lead-table td:nth-of-type(1):before { content:"代理编码" }
+    .details-table.lead-table td:nth-of-type(2):before { content:"客户名字" }
+    .details-table.lead-table td:nth-of-type(3):before { content:"手机号码" }
+    .details-table.lead-table td:nth-of-type(4):before { content:"邮件" }
+    .details-table.lead-table td:nth-of-type(5):before { content:"注册日期" }
+    .details-table.lead-table td:nth-of-type(6):before { content:"模拟/真实" }
+    .details-table.lead-table td:nth-of-type(7):before { content:"状态" }
+
+}

@@ -1,0 +1,32 @@
+<html>
+    <body>
+    	<p>
+    		Dear ${ReceiverName}:
+    	</p>
+		<br/>
+    	<h><strong>
+        Ib Commission Summary Report
+ 		</strong></h>
+		<br/>
+		<h3>
+			<table>
+				<tr>
+				<td>Report:</td><td>Ib Commission Summary Report</td>
+				</tr>
+				
+				<tr>
+				<td>Start Date: </td><td>${StartDate}</td>
+				</tr>
+				
+				<tr>
+				<td>End Date: </td><td>${EndDate}</td>
+				</tr>
+				
+				<tr>
+				<td>Create Report Time: </td><td>${CreateReportTime}</td>
+				</tr>
+				
+			</table>        
+		</h3>
+    </body>
+</html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="RebateDetailsDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO rebate_details
+					(rebate_code, spread_type, product_group, client_package_code, group_code, currency, min_lot, client_fix_commission_type, client_fix_commission, client_spread_commission_type, client_spread_commission, rebate_method, rebate_type, rebate_commission, rebate_to_master_type, rebate_to_master, start_date, end_date, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE rebate_details SET group_code = ?, currency = ?, client_fix_commission_type = ?, client_fix_commission = ?, client_spread_commission_type = ?, client_spread_commission = ?, rebate_method = ?, rebate_type = ?, rebate_commission = ?, rebate_to_master_type = ?, rebate_to_master = ?, end_date = ?, last_update_time = now(), last_update_user = ?
+					WHERE rebate_code = ? AND spread_type = ? AND product_group = ? AND client_package_code = ? AND min_lot = ? AND start_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM rebate_details
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM rebate_details WHERE rebate_code = ? AND client_package_code = ? AND start_date = ? AND product_group = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByRebateCode">
+					<value><![CDATA[
+					SELECT * FROM rebate_details WHERE rebate_code = ? ORDER BY rebate_code, client_package_code, product_group, start_date
+					]]></value>
+				</entry>
+				
+				<entry key="selectByRebateCodeWithDateRange">
+					<value><![CDATA[
+					SELECT * FROM rebate_details WHERE 
+					 rebate_code = ? AND
+					 start_date <= ? AND
+					 (end_date is null or end_date >= ?) 
+					ORDER BY client_package_code, product_group
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM rebate_details WHERE rebate_code = ? AND spread_type = ? AND min_lot = ? AND client_package_code = ? AND start_date = ? AND product_group = ?
+					]]></value>
+				</entry>
+				
+				<entry key="deleteByRebateCodeClientPackageCode">
+					<value><![CDATA[
+					DELETE FROM rebate_details WHERE rebate_code = ? AND client_package_code = ? AND spread_type = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectClientPackageCodeByRebateCode">
+					<value><![CDATA[
+					SELECT distinct spread_type, client_package_code FROM rebate_details WHERE rebate_code = ?;
+					]]></value>
+				</entry>
+				
+				<entry key="getReportByExample">
+					<value><![CDATA[
+						SELECT ib.ib_code,r.brand_code, rd.* from ib_client_rebate_map ib, rebate_details rd, rebate r 
+						WHERE ib.rebate_code = rd.rebate_code 
+						AND rd.rebate_code = r.rebate_code
+						AND rd.start_date <= ?
+						AND (rd.end_date >= ? or rd.end_date is null)
+					]]></value>
+				</entry>
+				
+				<entry key="getReportByUserExample">
+					<value><![CDATA[
+						SELECT ib.ib_code,r.brand_code, rd.* from ib_client_rebate_map ib, rebate_details rd, rebate r 
+						WHERE ib.rebate_code = rd.rebate_code 
+						AND rd.rebate_code = r.rebate_code
+						AND rd.start_date <= ?
+						AND (rd.end_date >= ? or rd.end_date is null)
+						AND ib.ib_code in 
+						(
+							SELECT B.ib_code
+							FROM ib_tree A
+							LEFT JOIN ib_tree B
+							ON B.min_id >= A.min_id AND B.max_id <= A.max_id
+							where A.id in 
+							(
+								#team_head_ids
+							)
+						)
+					]]></value>
+				</entry>
+				
+
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

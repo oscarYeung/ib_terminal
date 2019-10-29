@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>login.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+   
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+     <style type="text/css">
+    .panelce{  width:400px;    height:260px;    position:absolute;    left:50%;    top:40%;    margin-left:-200px;    margin-top:-130px; box-shadow:0 2px 7px 1px #568D90
+			
+			}
+	label{ font-weight: normal;}	
+	.loginbg{ background: url("images/login3.jpg"); background-repeat: no-repeat; }	
+	/* background: url("images/login.jpg"); background-repeat: no-repeat;*/
+    </style>
+ <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+ <script type="text/javascript" src="js/bootstrap.min.js"></script>
+ <script type="text/javascript">
+  function gotoReg(){
+	  window.location.href="reg.html";
+  }
+ </script>
+  </head>
+  
+  <body class="loginbg">
+  <div class="container ">
+<div class="panel panel-default panelce">
+   <div class="panel-heading">
+      <h3 class="panel-title">
+       用户登录
+      </h3>
+   </div>
+   <div class="panel-body">
+   <form role="form" class="form-horizontal" action="home.html">
+       <label for="firstname" class="col-sm-3 control-label">用户名</label>
+       <div class="form-group col-sm-9">
+      		<input type="text" class=" form-control" id="name"  placeholder="请输入名称">
+      </div>
+   		<label for="firstname" class="col-sm-3 control-label">密码</label>
+       <div class="form-group col-sm-9">
+      		<input type="text" class=" form-control" id="name"  placeholder="请输入名称">
+      </div>
+    
+   <div class="form-group text-center">
+      <button type="submit" class="btn btn-info col-sm-offset-3 col-sm-8">登     录</button>
+   </div>
+   <div> <a href="" class="col-sm-offset-3">注册</a> <a href="" class="col-sm-offset-2">忘记登陆密码？</a></div>
+   </form>
+   </div><!-- panel body-->
+   </div><!-- panel -->
+   </div>
+  </body>
+</html>

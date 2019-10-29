@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbCommissionClientSummaryDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_commission_client_summary
+					(client_ib_code, platform, total_spread_commission, last_update_time, total_trade_swaps, total_rebate_commission_lot, total_commission, total_lot, product_group, brand_code, currency, client_code, total_rebate_commission_pip, trade_date, total_fix_commission, total_trade_pl, last_update_user, ib_code, net_deposit)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_commission_client_summary SET total_spread_commission = ?, last_update_time = now(), total_trade_swaps = ?, total_rebate_commission_pip = ?, total_rebate_commission_lot = ?, total_commission = ?, total_fix_commission = ?, total_trade_pl = ?, total_lot = ?, last_update_user = ?, currency = ?, net_deposit = ?
+					WHERE client_ib_code = ? AND platform = ? AND client_code = ? AND trade_date = ? AND ib_code = ? AND product_group = ? AND brand_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_client_summary
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_client_summary WHERE client_ib_code = ? AND platform = ? AND client_code = ? AND trade_date = ? AND ib_code = ? AND product_group = ? AND brand_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_commission_client_summary WHERE client_ib_code = ? AND platform = ? AND client_code = ? AND trade_date = ? AND ib_code = ? AND product_group = ? AND brand_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="deleteByDateRange">
+					<value><![CDATA[
+					DELETE FROM ib_commission_client_summary WHERE trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+				
+				<entry key="generateClientSummary">
+					<value><![CDATA[
+					CALL usp_generate_ib_commission_client_summary(?, ?)
+					]]></value>
+				</entry>
+				
+				<entry key="selectByIbCodeDateRange">
+					<value><![CDATA[
+					SELECT brand_code, ib_code, client_code, client_ib_code, product_group, currency,
+						SUM(total_lot) AS total_lot, SUM(total_fix_commission) AS total_fix_commission, 
+					    SUM(total_rebate_commission_lot) AS total_rebate_commission_lot, 
+					    SUM(total_rebate_commission_pip) AS total_rebate_commission_pip, 
+					    SUM(total_commission) AS total_commission
+					FROM ib_commission_client_summary
+					WHERE 
+						trade_date >= ? AND 
+						trade_date <= ? AND
+						product_group !='' AND
+						ib_code = ?						
+					GROUP BY 
+						brand_code, ib_code, client_code, client_ib_code, product_group, currency	
+					ORDER BY
+						ib_code,client_ib_code,client_code, product_group;				
+					]]></value>
+				</entry>
+				
+				<entry key="selectByIbCodeClientIbCode">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_client_summary 
+					WHERE client_ib_code = ? AND ib_code = ? AND trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByBrandCodeDateRange">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_client_summary 
+					WHERE trade_date >= ? AND trade_date <= ? AND brand_code = ?
+					-- get ib code from ib_tree
+					AND ib_code in 
+					(
+						-- get ib code from ib_tree
+						SELECT B.ib_code
+						FROM ib_tree A
+						LEFT JOIN ib_tree B
+						ON B.min_id >= A.min_id AND B.max_id <= A.max_id
+						where A.id in 
+						(
+							#team_head_ids
+						)
+					) AND ib_code in (#ibCodes)
+					ORDER BY brand_code, ib_code
+					]]></value>
+				</entry>
+				
+				<entry key="selectByBrandCodeDateRangePeriod">
+					<value><![CDATA[	
+					SELECT 
+						A.*, 
+						CASE WHEN B.net_deposit is null then 0 ELSE B.net_deposit END as net_deposit,
+						CASE WHEN C.net_adj is null then 0 ELSE C.net_adj END as net_adj
+					FROM (
+						SELECT brand_code, platform, ib_code, client_code, client_ib_code, currency,
+							sum(total_lot) as total_lot,
+							sum(total_fix_commission) as total_fix_commission,
+							sum(total_spread_commission) as total_spread_commission,
+							sum(total_rebate_commission_lot) as total_rebate_commission_lot,
+							sum(total_rebate_commission_pip) as total_rebate_commission_pip,
+							sum(total_commission) as total_commission,
+							case when ib_code = client_ib_code then sum(total_trade_pl) else 0 end as total_trade_pl,
+        					case when ib_code = client_ib_code then sum(total_trade_swaps) else 0 end as total_trade_swaps
+						FROM ib_commission_client_summary 
+						WHERE trade_date >= ? AND trade_date <= ? AND brand_code = ?
+					    AND ib_code in 
+						(
+							-- get ib code from ib_tree
+							SELECT B.ib_code
+							FROM ib_tree A
+							LEFT JOIN ib_tree B
+							ON B.min_id >= A.min_id AND B.max_id <= A.max_id
+							where A.id in 
+							(
+								#team_head_ids
+							)
+						) AND ib_code in (#ibCodes)
+						GROUP BY brand_code, platform, ib_code, client_code, client_ib_code, currency
+					)A 
+					LEFT JOIN (
+						select client_code, sum(amountUsd) as net_deposit
+						from client_margin_in_out 
+						where trade_date >= ? AND trade_date <= ? AND trade_type_id = '1001'
+						group by client_code
+					)B ON A.client_code = B.client_code
+					LEFT JOIN (
+						select client_code, sum(amountUsd) as net_adj 
+						from client_margin_in_out 
+						WHERE trade_date >= ? AND trade_date <= ? and trade_type_id = '1003'
+						group by client_code
+					)C ON A.client_code = C.client_code
+					
+					ORDER BY brand_code, ib_code, client_code;
+					]]></value>
+				</entry>
+				
+				
+				
+				<entry key="selectIbClientSummary">
+					<value><![CDATA[
+					select c.client_code, c.ib_code, netMarginIn as net_margin_in, totalLot as total_lot, pl, commission, rebate from (
+						select distinct ib_code, client_code from ib_client_map where ib_code in (
+							SELECT node.ib_code
+							FROM 
+								ib_tree AS node,
+								ib_tree AS parent
+							WHERE
+								node.min_id BETWEEN parent.min_id AND parent.max_id
+								AND parent.ib_code = ?
+								AND parent.start_date <= ?
+								AND (parent.end_date >= ? OR parent.end_date is null)
+								AND (node.end_date >= ? OR node.end_date is null)
+					    )
+					) c
+					left join (
+						select client_code, sum(amount) as netMarginIn from client_margin_in_out 
+						where trade_date >= ? and trade_date <= ?
+						group by client_code
+					) cm on cm.client_code = c.client_code
+					left join (
+						select client_ib_code, client_code, sum(total_lot) as totalLot, 
+							sum(total_trade_pl) as pl, sum(total_fix_commission) as commission, 
+							(sum(total_rebate_commission_lot) + sum(total_rebate_commission_pip)) as rebate
+						from ib_commission_client_summary 
+						where ib_code = ? and trade_date >= ? and trade_date <= ?
+						group by client_ib_code, client_code
+						order by client_ib_code, client_code
+					) rb on rb.client_code = c.client_code;
+					]]></value>
+				</entry>
+				
+				<entry key="selectIbCommissionSummaryDetail">
+					<value><![CDATA[
+					select cm.client_code,
+						IFNULL(B.total_lot, 0) as total_lot, 
+						IFNULL(B.pl, 0) as pl, 
+						IFNULL(B.commission, 0) as commission, 
+						IFNULL(B.rebate, 0) as rebate, 
+						IFNULL(C.net_margin_in, 0) as net_margin_in 
+					from ib_client_map cm 
+					left join 
+					(
+						select 
+							client_code,
+							sum(total_lot) as total_lot, 
+							sum(total_trade_pl) as pl, 
+							sum(total_fix_commission) as commission, 
+							sum(total_rebate_commission_lot + total_rebate_commission_pip) as rebate
+						from ib_commission_client_summary 
+						where trade_date >= ? AND trade_date <= ? AND ib_code = ?
+						and ib_code = client_ib_code
+						group by client_code
+					)B on cm.client_code = B.client_code
+					LEFT JOIN
+					(
+						select client_code, sum(amount) as net_margin_in from client_margin_in_out 
+						where 
+							trade_date >= ? and trade_date <= ? and 
+							client_code in 
+							(
+								select client_code from ib_client_map where ib_code = ?
+							)
+						group by client_code
+					)C on cm.client_code = C.client_code
+					where cm.ib_code = ? and (total_lot <> 0 || pl <> 0 || commission <> 0 || rebate <> 0 || net_margin_in <> 0);
+					]]></value>
+				</entry>
+				
+				<entry key="selectIbCommissionSummary">
+					<value><![CDATA[
+					select 
+						A.ib_code, CONCAT(D.first_name, ' ',  D.last_name) as ib_name,
+						IFNULL(B.total_lot, 0) as total_lot, 
+					    IFNULL(B.referral_total_lot, 0) as referral_total_lot, 
+					    IFNULL(B.pl, 0) as pl, 
+					    IFNULL(B.referral_pl, 0) as referral_pl, 
+					    IFNULL(B.commission, 0) as commission, 
+					    IFNULL(B.referral_commission, 0) as referral_commission, 
+					    IFNULL(B.rebate, 0) as rebate, 
+					    IFNULL(B.referral_rebate, 0) as referral_rebate, 
+					    IFNULL(C.net_margin_in, 0) as net_margin_in 
+					from 
+					(
+						SELECT node.ib_code
+						FROM 
+							ib_tree AS node,
+							ib_tree AS parent
+						WHERE
+							node.min_id BETWEEN parent.min_id AND parent.max_id
+							AND parent.ib_code = ?
+							AND parent.start_date <= ?
+							AND (parent.end_date >= ? OR parent.end_date is null)
+						AND (node.end_date >= ? OR node.end_date is null)
+					)A 
+					LEFT JOIN
+					(
+						select 
+							ib_code,
+							sum(case when ib_code = client_ib_code then total_lot else 0 end) as total_lot, 
+							sum(case when ib_code = client_ib_code then 0 else total_lot end) as referral_total_lot,
+							sum(case when ib_code = client_ib_code then total_trade_pl else 0 end) as pl, 
+							sum(case when ib_code = client_ib_code then 0 else total_trade_pl end) as referral_pl,
+							sum(case when ib_code = client_ib_code then total_fix_commission else 0 end) as commission, 
+							sum(case when ib_code = client_ib_code then 0 else total_fix_commission end) as referral_commission,
+							sum(case when ib_code = client_ib_code then total_rebate_commission_lot + total_rebate_commission_pip else 0 end) as rebate, 
+							sum(case when ib_code = client_ib_code then 0 else total_rebate_commission_lot + total_rebate_commission_pip end) as referral_rebate
+						from ib_commission_client_summary 
+						where trade_date >= ? AND trade_date <= ?
+						group by ib_code
+					)B ON B.ib_code = A.ib_code
+					LEFT JOIN
+					(
+						select ib_code, sum(net_margin_in) as net_margin_in from 
+						(
+							select ib_code, client_code from ib_client_map 
+							where 
+								ib_code in 
+								(
+									SELECT node.ib_code
+									FROM 
+										ib_tree AS node,
+										ib_tree AS parent
+									WHERE
+										node.min_id BETWEEN parent.min_id AND parent.max_id
+										AND parent.ib_code = ?
+										AND parent.start_date <= ?
+										AND (parent.end_date >= ? OR parent.end_date is null)
+										AND (node.end_date >= ? OR node.end_date is null)	
+								)
+						)icm 
+						left join 
+						(
+							select client_code, sum(amount) as net_margin_in from client_margin_in_out 
+							where trade_date >= ? and trade_date <= ?
+							group by client_code
+						)cmio on cmio.client_code = icm.client_code
+						group by ib_code
+					)C on A.ib_code = C.ib_code
+					LEFT JOIN ib_profile D on A.ib_code = D.ib_code;
+					]]></value>
+				</entry>
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

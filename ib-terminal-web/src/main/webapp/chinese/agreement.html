@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IBTerminal-HYCM</title>
+<link rel="shortcut icon" href="/images/favicon.png" type="image/png" />
+<link rel="stylesheet" href="/css/bootstrap.min.css" >
+<link rel="stylesheet" href="/css/font-awesome.min.css" >
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/layout.css">
+<script src="/js/jquery-1.9.1.min.js"></script> 
+</head>
+<body>
+<header>
+  <!--#include file="include/head.html"-->
+</header>
+
+<!-- left fixed -->
+<div id="wrap">
+  <!--#include virtual="/WEB-INF/include/left.jsp"-->
+
+  <!-- left fixed End--> 
+  
+  <!-- right center -->
+  <div class="page-center" id="boxb">
+    <div id="content">
+      <div id="content_center">
+        <ul class="breadcrumb">
+          <li><i class="fa fa-home"></i> <a href="/index.hyml">Home</a><i class="fa fa-angle-right"></i><a href="/profile.hyml">Account</a><i class="fa fa-angle-right"></i>My Agreement </li>
+        </ul>
+        <div class="container-fluid">
+          <h2 class="title">My Agreement</h2>
+          <div class="agreement">
+              <div class="alert alert-success fade in" role="alert">
+                     <div class="agree-close" data-dismiss="alert" aria-hidden="true">
+                     	<i class="fa fa-circle-thin"></i>
+                     	<i class="fa fa-close fa-stack-1x"></i>
+                     </div>
+                     <i class="fa fa-check-circle"></i>You have already signed the IB Agreement.
+              </div>
+              <dl>
+                <dd><img src="/images/icon_pdf.png"></dd>
+                <dt>
+                    <a href="">ibagreement</a>
+                    <p>Congratulation! Your IB Agreement has been approved.<br>
+Now you are the official Introducing Broker of HYCM.</p>
+                </dt>
+              </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--#include file="include/foot.html"-->
+<script src="/js/adaptability.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+</body>
+</html>

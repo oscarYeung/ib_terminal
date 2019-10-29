@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<bean id="middleOperatorBean" class="com.henyep.ib.terminal.operator.MiddleOperator">
+	    <property name="camelContext" ref="middlewareContext"></property>
+	    <property name="configFields" ref="configFields"></property>
+	    
+	</bean>
+	<!-- Router Map -->
+	<camelContext id="middlewareContext" xmlns="http://camel.apache.org/schema/spring">
+		<template id="middlewareTemplate" camelContextId="middlewareContext" />
+		<endpoint id="serverApiEntrance" uri="direct:marketpulse.web.api.entrance" />
+		
+		<route id="serverApiRouter">
+			<from ref="serverApiEntrance" />
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Content-Type">
+				<constant>application/json</constant>
+			</setHeader>
+			<setProperty propertyName="CamelCharsetName">  
+		        <constant>UTF-8</constant>  
+		    </setProperty> 
+			<setBody>
+				<simple>${in.body}</simple>
+			</setBody>
+			<recipientList>
+				<simple>http4://ibserver.henyep.com:8881/${in.headers.serverApiPath}?httpClient.connectTimeout=100000</simple>
+			</recipientList>
+		</route>
+	</camelContext>
+</beans>

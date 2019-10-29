@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="MarginInDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO margin_in
+					(exchange_rate, status, brand_code, currency, amount, category, account, transfer_id, create_user, account_currency, comment, account_amount, trade_date, create_time, last_update_user, last_update_time)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now())
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE margin_in SET last_update_time = now(), exchange_rate = ?, status = ?, brand_code = ?, currency = ?, amount = ?, category = ?, account = ?, transfer_id = ?, last_update_user = ?, account_currency = ?, comment = ?, account_amount = ?, trade_date = ?
+					WHERE id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM margin_in
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM margin_in WHERE id = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM margin_in WHERE id = ?
+					]]></value>
+				</entry>
+				
+				<entry key="clearMarginInDateByDateRange">
+					<value><![CDATA[
+					UPDATE margin_in SET status = 'D', comment = ?, last_update_time = now(), last_update_user = ? WHERE trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByUserCode">
+					<value><![CDATA[
+					SELECT * FROM margin_in 
+					WHERE account in (
+						-- get ib code from ib_tree
+						SELECT B.ib_code
+						FROM ib_tree A
+						LEFT JOIN ib_tree B
+						ON B.min_id >= A.min_id AND B.max_id <= A.max_id
+						where A.id in 
+						(
+							#team_head_ids
+						)
+					)
+					]]></value>
+				</entry>
+				
+				<entry key="monthlyMarginInOutReport">
+					<value><![CDATA[
+					
+					SELECT A.brand_code, A.account, A.trade_date, A.margin_in, A.margin_out, B.account_balance FROM 
+					(
+						SELECT brand_code, account, trade_date, SUM(margin_in) AS margin_in, SUM(margin_out) AS margin_out 
+						FROM
+						(
+							SELECT brand_code, account, DATE_FORMAT(trade_date,'%Y-%b') AS trade_date, 0 AS margin_in, amount AS margin_out
+								FROM margin_out 
+								WHERE 
+									true
+									#account_where_clause
+					                #brand_code_where_clause
+					                #trade_date_where_clause
+							UNION ALL
+							SELECT brand_code, account, DATE_FORMAT(trade_date,'%Y-%b') AS trade_date, amount AS margin_in, 0 AS margin_out
+								FROM margin_in 
+								WHERE 
+									true
+									#account_where_clause
+					                #brand_code_where_clause
+					                #trade_date_where_clause
+						)margin_in_out
+						GROUP BY brand_code, account, trade_date
+					) A
+					LEFT JOIN 
+					(
+						SELECT ib_code, DATE_FORMAT(trade_date,'%Y-%b') AS trade_date, account_balance FROM 
+						(
+							SELECT ib_code, trade_date, account_balance 
+					        FROM ib_account_details_history
+							UNION ALL
+							SELECT ib_code, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -1 DAY), '%Y-%m-%d') AS trade_date, account_balance 
+					        FROM ib_account_details
+						) ib_account_details_db
+						WHERE trade_date IN 
+						(
+							SELECT MAX(trade_date) 
+							FROM 
+							(
+								SELECT DISTINCT trade_date, DATE_FORMAT(trade_date,'%Y-%b') AS format_trade_date FROM ib_account_details_history
+								UNION ALL
+								SELECT DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -1 DAY), '%Y-%m-%d') AS trade_date, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -1 DAY),'%Y-%b') AS format_trade_date
+							)trade_date_db
+							GROUP BY format_trade_date
+						)
+					)B ON A.account = B.ib_code AND A.trade_date = B.trade_date
+					ORDER BY brand_code, account, trade_date;
+					
+					]]></value>
+				</entry>
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

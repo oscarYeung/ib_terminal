@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbProfileDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_profile (ib_code,address,brand_code,chinese_name,country,email,first_name,language,last_name,mobile,password,sex,status,username,last_update_user,is_white_label_user,last_update_time,create_time) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),now()) 
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_profile SET last_update_time = now(), sex = ?, status = ?, password = ?, chinese_name = ?, country = ?, first_name = ?, username = ?, email = ?, address = ?, last_name = ?, last_update_user = ?, language = ?, mobile = ?, brand_code = ?
+					WHERE ib_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_profile
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_profile WHERE ib_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByIbCode">
+					<value><![CDATA[
+					SELECT * FROM ib_profile WHERE ib_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_profile WHERE ib_code = ? AND brand_code = ?
+					]]></value>
+				</entry>
+				<entry key="getProfileByUsernameAndEmail">
+					<value><![CDATA[select * from ib_profile where username = ? and email = ?]]></value>
+				</entry>
+				<entry key="getProfileByIbCodeAndPassword">
+					<value><![CDATA[select * from ib_profile where ib_code = ? and password = ?]]></value>
+				</entry>	
+				<entry key="getProfileCountByUsername">
+					<value><![CDATA[select count(0) from ib_profile where username = ?]]></value>
+				</entry>
+				<entry key="getProfileByIbCode">
+					<value><![CDATA[select * from ib_profile where ib_code = ?]]></value>
+				</entry>
+				<entry key="getProfileByUsernameAndBrandCode">
+					<value><![CDATA[select * from ib_profile where username = ? and brand_code = ?]]></value>
+				</entry>			
+				<entry key="updateProfilePassword">
+					<value><![CDATA[update ib_profile set password = ?, last_update_user = ?, last_update_time = now() where ib_code = ?]]></value>
+				</entry>								
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

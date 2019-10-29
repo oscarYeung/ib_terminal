@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="RebateCpaDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO rebate_cpa
+					(rebate_code, currency, amount, min_lot, min_deposit, start_date, end_date, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE rebate_cpa SET currency = ?, amount = ?, min_lot = ?, min_deposit = ?, end_date = ?, last_update_time = ?, last_update_user = ?
+					WHERE rebate_code = ? AND start_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM rebate_cpa
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM rebate_cpa WHERE rebate_code = ? AND start_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM rebate_cpa WHERE rebate_code = ? AND start_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByDateRange">
+					<value><![CDATA[
+					SELECT * FROM rebate_cpa WHERE start_date <= ? AND (end_date >= ? or end_date is null)
+					]]></value>
+				</entry>
+				
+				<entry key="selectByIbCpaByDateRange">
+					<value><![CDATA[
+					SELECT i.ib_code ,i.brand_code, i.start_date, i.end_date , r.* from rebate_cpa r, ib_client_rebate_map i 
+					WHERE r.rebate_code = i.rebate_code
+					AND r.start_date <= ?
+					AND i.start_date <= ? 
+					AND (r.end_date >= ? or r.end_date is null)
+					AND (i.end_date >= ? or i.end_date is null)
+					]]></value>
+				</entry>
+				
+				
+				
+				
+			</map>
+			
+		</constructor-arg>
+	</bean>
+</beans>

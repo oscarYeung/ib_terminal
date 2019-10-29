@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbClientLinkDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_client_link
+					(last_update_time, client_package_code, last_update_user, ib_code, url, campaign_id, brand_code, description, seq_id)
+					VALUES (now(), ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_client_link SET last_update_time = now(), last_update_user = ?, brand_code = ?, description = ?, seq_id = ?
+					WHERE client_package_code = ? AND ib_code = ? AND url = ? AND campaign_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_client_link
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_client_link WHERE client_package_code = ? AND ib_code = ? AND url = ? AND campaign_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_client_link WHERE client_package_code = ? AND ib_code = ? AND url = ? AND campaign_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectByBrandCodeAndIbCode">
+					<value><![CDATA[
+					SELECT * FROM ib_client_link WHERE brand_code = ? AND ib_code = ? order by seq_id
+					]]></value>
+				</entry>
+
+				<entry key="getMaxSeqId">
+					<value><![CDATA[
+					SELECT CASE 
+						WHEN max(seq_id) is not null
+						THEN max(seq_id) 
+						ELSE 0			
+					END AS seq_id
+					FROM ib_client_link
+					WHERE brand_code = ? and ib_code = ?
+					]]></value>
+				</entry>
+
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

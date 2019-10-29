@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+	 <!--配置拦截器, 多个拦截器,顺序执行 -->  
+	<mvc:interceptors>    
+	    <mvc:interceptor>    
+	        <!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->  
+	        <mvc:mapping path="/**/*.hyml" />  
+	          <mvc:exclude-mapping path="/login.hyml" /> 
+	          <mvc:exclude-mapping path="/dologin.hyml" />
+	          <mvc:exclude-mapping path="/forget.hyml" />
+	          <mvc:exclude-mapping path="/doForgotPassword.hyml" />
+	          <mvc:exclude-mapping path="/forget.hyml" />
+	          <mvc:exclude-mapping path="/resetPassword.hyml" />
+	         <mvc:exclude-mapping path="/doSetPassword.hyml" />
+	        <bean class="com.henyep.ib.terminal.interceptor.CommonInterceptor"></bean>    
+	    </mvc:interceptor>  
+	    <!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->  
+	</mvc:interceptors>  
+
+  <bean id="configFields" class="com.henyep.ib.terminal.entity.ConfigFields">
+     <property name="request_url" value="http://ibserver.henyep.com:8881/"></property> 
+     <property name="white_label_request_url" value="http://ibserver.henyep.com:8881/white_label_server/"></property>
+     <property name="downloadTempFolder" value="C:/temp/"></property>
+   </bean>
+
+   <!--  <mvc:interceptors>  
+    <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />  
+	</mvc:interceptors>  
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename"><value>messages</value></property>
+		<property name="defaultEncoding" value="UTF-8"></property>
+	</bean>
+	
+	
+	 <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+	   <property name="cookieMaxAge" value="-1"/>1年 31563000
+	   <property name="defaultLocale" value="en_US"/>
+	   <property name="cookieName" value="SitLang"></property>
+	 </bean>  -->
+	<!--  <mvc:annotation-driven validator="validator" conversion-service="conversion-service" />
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass"  value="org.hibernate.validator.HibernateValidator"/>
+        <property name="validationMessageSource" ref="messageSource"/>  不设置则默认为classpath下的 ValidationMessages.properties
+    </bean>
+    <bean id="conversion-service" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" />
+    
+    <bean id="validatemessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">  
+        <property name="basename" value="classpath:validatemessages"/>  
+        <property name="fileEncodings" value="utf-8"/>  
+        <property name="cacheSeconds" value="120"/>  
+    </bean> -->
+	</beans>

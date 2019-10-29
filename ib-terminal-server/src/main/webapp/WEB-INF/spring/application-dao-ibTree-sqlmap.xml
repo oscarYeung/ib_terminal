@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbTreeDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="getCurrentSnapShot">
+					<value><![CDATA[
+					CALL usp_get_ib_tree_snap_shot(?, ?)
+					]]></value>
+				</entry>
+				<entry key="getByIbCodeDateRange">
+					<value><![CDATA[
+					CALL usp_get_by_ib_code(?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="getByTeamHead">
+					<value><![CDATA[
+					CALL usp_get_by_team_head(?, ?, ?)
+					]]></value>
+				</entry>
+
+				<entry key="getIbTreeByIb">
+					<value><![CDATA[
+					-- get the parents of selected ib
+					SELECT A.* from ib_tree A, ib_tree B 
+					WHERE A.min_id < B.min_id  AND A.max_id > B.max_id
+					AND B.ib_code = ?
+					AND A.start_date <= ?
+					AND B.start_date <= ?
+					AND (A.end_date >= ? OR ? is null OR A.end_date is null)
+					AND (B.end_date >= ? OR ? is null OR B.end_date is null)
+					UNION ALL
+					-- get all selected ib childs
+					SELECT node.*
+					FROM 
+						ib_tree AS node,
+					    ib_tree AS parent
+					WHERE
+						node.min_id BETWEEN parent.min_id AND parent.max_id
+						AND parent.ib_code = ?
+					    AND parent.start_date <= ?
+					    AND node.start_date <= ?
+					    AND (parent.end_date >= ? OR ? IS NULL OR parent.end_date IS NULL)
+					    AND (node.end_date >= ? OR ? IS NULL OR node.end_date IS NULL)
+					ORDER BY min_id;
+					
+					]]></value>
+				</entry>
+
+				<entry key="insert">
+					<value><![CDATA[
+					CALL usp_insert_ib(?, ?, ?, ?, ?, ?,?)
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					CALL usp_delete_ib(?,?)
+					]]></value>
+				</entry>
+
+				<entry key="move">
+					<value><![CDATA[
+					CALL usp_move_ib(?, ?,?)
+					]]></value>
+				</entry>
+				
+				<entry key="getByUserCode">
+					<value><![CDATA[		
+					
+					
+					SELECT user_id, user_brand_code, brand_code, user_code, user_min_id, user_max_id, id, team, ib_code, ib_min_id, ib_max_id, start_date, end_date FROM 
+					(
+						SELECT uB.id AS user_id, uB.brand_code AS user_brand_code, uB.user_code, uB.ib_team_head_id, uB.min_id AS user_min_id, uB.max_id AS user_max_id
+						FROM user_ib_tree uA
+						LEFT JOIN user_ib_tree uB ON uB.min_id >= uA.min_id AND uB.max_id <= uA.max_id
+						WHERE uA.user_code = ?
+					) A
+					LEFT JOIN 
+					(
+						SELECT parent.id AS parent_id, node.brand_code, node.id, node.team, node.ib_code, node.min_id - parent.min_id AS ib_min_id, node.max_id - parent.min_id AS ib_max_id, node.start_date, node.end_date
+						FROM 
+							ib_tree AS node,
+							ib_tree AS parent
+						WHERE
+							node.min_id BETWEEN parent.min_id AND parent.max_id
+						ORDER BY node.min_id
+					) B ON A.ib_team_head_id = B.parent_id order by user_min_id, ib_min_id;
+					]]></value>
+				</entry>
+
+				<entry key="getIbTreeByTeamHead">
+					<value><![CDATA[
+					SELECT node.id, node.is_ib, node.brand_code, node.team, node.ib_code, node.min_id - parent.min_id AS min_id, node.max_id - parent.min_id AS max_id, node.start_date, node.end_date, node.last_update_time, node.last_update_user
+					FROM 
+						ib_tree AS node,
+						ib_tree AS parent
+					WHERE
+						node.min_id BETWEEN parent.min_id AND parent.max_id and parent.id = ?
+						AND parent.start_date <= ?
+					    AND (parent.end_date >= ? OR parent.end_date is null)
+					    AND (node.end_date >= ? OR node.end_date is null)
+					    AND node.start_date <= ?
+					ORDER BY node.min_id;
+					]]></value>
+				</entry>
+				
+				<entry key="getUserIbTreeByUserCode">
+					<value><![CDATA[		
+					
+					select i.brand_code, ui.user_code, u.email, i.id as ib_team_head_id, 0 as min_id, 1 as max_id, i.start_date, i.end_date, ui.last_update_time, ui.last_update_user from user_ib ui 
+					left join ib_tree i on ui.ib_team_head = i.ib_code and i.start_date <= now() and (i.end_date >= now() or i.end_date is null)
+					left join user u on u.user_code = ui.user_code
+					where ui.user_code = ?;
+					]]></value>
+				</entry>
+
+
+				<entry key="validateAddIbByIbCode">
+					<value><![CDATA[
+					SELECT * FROM (
+						-- parent ib not exist
+						SELECT CASE WHEN COUNT(*) = 0 THEN '71013' END AS error_code FROM ib_tree WHERE ib_code = ? AND start_date <= NOW() AND (end_date IS NULL OR end_date >= NOW())
+						UNION ALL
+						-- target ib already on tree
+						SELECT CASE WHEN COUNT(*) > 0 THEN '71014' END AS error_code FROM ib_tree WHERE ib_code = ? AND start_date <= NOW() AND (end_date IS NULL OR end_date >= NOW())
+						UNION ALL
+						-- not in ib profile
+						SELECT CASE WHEN COUNT(*) = 0 THEN '71015' END AS error_code FROM ib_profile WHERE ib_code = ?
+						UNION ALL
+						-- parent ib and taget ib with diff brand code
+						SELECT 
+						    CASE WHEN ip1.ib_code IS NOT NULL AND ip2.ib_code IS NOT NULL AND ip1.brand_code <> ip2.brand_code THEN '71016' END AS error_code
+						FROM
+						    ib_profile ip1,
+						    ib_profile ip2
+						WHERE
+						    ip1.ib_code = ?
+						        AND ip2.ib_code = ?
+						UNION ALL
+						-- parent ib start date place before the target ib start date
+						SELECT '71017' AS error_code FROM ib_tree WHERE ib_code = ? AND start_date > ? 
+					) A WHERE error_code IS NOT NULL;
+					
+					]]></value>
+				</entry>
+				
+				<entry key="getByIbCode">
+					<value><![CDATA[
+						SELECT * FROM ib_tree WHERE ib_code = ? AND start_date <= NOW() AND (end_date IS NULL OR end_date >= NOW());
+					]]></value>
+				</entry>
+				
+				<entry key="getTeamHeadIdByUserCode">
+					<value><![CDATA[
+						select it.id
+						from user_ib ui
+						left join ib_tree it on it.ib_code = ui.ib_team_head and it.start_date <= now() and (it.end_date is null or it.end_date >= now())
+						where ui.user_code = ? and it.brand_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="getTeamHeadIdByUserCodeOnly">
+					<value><![CDATA[
+						select it.id
+						from user_ib ui
+						left join ib_tree it on it.ib_code = ui.ib_team_head and it.start_date <= now() and (it.end_date is null or it.end_date >= now())
+						where ui.user_code = ?
+					]]></value>
+				</entry>
+				
+				<entry key="getIbListByTeamHeadIds">
+					<value><![CDATA[
+						Select a.ib_code from ib_tree a, ib_tree b where a.min_id >= b.min_id and a.max_id <= b.max_id and b.id in (#team_head_ids)
+					]]></value>
+				</entry>
+
+				
+				
+
+ 
+
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

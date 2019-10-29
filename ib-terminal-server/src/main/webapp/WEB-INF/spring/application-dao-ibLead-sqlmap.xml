@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbLeadDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT IGNORE INTO ib_lead
+					(ib_code, salesforce_id, client_first_name, client_last_name, phone, email, registration_date, register_type, status, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_lead SET ib_code = ?, client_first_name = ?, client_last_name = ?, phone = ?, email = ?, registration_date = ?, register_type = ?, status = ?, last_update_time = ?, last_update_user = ?
+					WHERE salesforce_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_lead
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_lead WHERE salesforce_id = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_lead WHERE salesforce_id = ?
+					]]></value>
+				</entry>
+				
+				<entry key="deleteIbLeads">
+					<value><![CDATA[
+					DELETE FROM ib_lead WHERE salesforce_id in
+					]]></value>
+				</entry>
+				
+				<entry key="deleteIbLeadsByTradeDate">
+					<value><![CDATA[
+					DELETE FROM ib_lead WHERE last_update_time >= ? 
+					]]></value>
+				</entry>
+				
+				<entry key="getLeads">
+					<value><![CDATA[
+					SELECT * FROM ib_lead WHERE ib_code =?
+					]]></value>
+				</entry>
+				
+				<entry key="getLeadsWithSubIb">
+					<value><![CDATA[
+					SELECT ib_code, salesforce_id,client_first_name,client_last_name,
+					CASE WHEN ib_code= ? THEN phone	ELSE '' END phone,
+					CASE WHEN ib_code= ? THEN email ELSE '' END email,
+					registration_date, register_type, status, last_update_time,last_update_user
+					FROM ib_lead WHERE ib_code in 
+					(					
+						SELECT node.ib_code
+						FROM ib_tree AS node, ib_tree AS parent
+						WHERE
+							node.min_id BETWEEN parent.min_id AND parent.max_id
+							AND parent.ib_code = ?
+   							AND parent.start_date <= ?
+   							AND (parent.end_date >= ? OR parent.end_date is null)
+   							AND (node.end_date >= ?  OR node.end_date is null)    			
+					)
+					#WhereClauses
+					ORDER BY ib_code, registration_date desc
+					]]></value>
+				</entry>
+				
+				<entry key="getNewLeadFromSAP">
+					<value><![CDATA[
+						SELECT 
+							l.agent AS ib_code,l.import_id AS salesforce_id,l.firstname AS client_first_name,
+							l.lastname AS client_last_name, l.phone, l.email,l.registrationDate AS registration_date,'L' AS register_type,
+							case 
+								when l.lead_status_id in (1519, 1522,1523) then 'Rejected'
+								when l.lead_status_id = 1514 then 'Approved'
+							else 'Registered'
+								end as status,
+							l.last_modified_time AS last_update_time, 'system' AS last_update_user
+						FROM d_lead l, d_employee e
+						WHERE  l.sales_id = e.id and e.username <> 'admin@henyep.com' and
+							 (l.isconverted = 0 AND l.isdelete = 0) AND l.last_modified_time >= ? AND l.agent IS NOT NULL AND l.agent <> '1000'
+					]]></value>
+				</entry>
+				
+				<entry key="getDeletedLeadFromSAP">
+					<value><![CDATA[
+						SELECT import_id AS salesforce_id
+						FROM d_lead 
+						WHERE (isconverted = 1 or isdelete = 1) AND last_modified_time >= ? AND agent IS NOT NULL AND agent <> '1000'
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

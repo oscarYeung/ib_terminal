@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.henyep</groupId>
+		<artifactId>ib-terminal</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<artifactId>ib-terminal-web</artifactId>
+
+	<packaging>war</packaging>
+	<name>ib-terminal-web Maven Webapp</name>
+	<url />
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<skipTest>true</skipTest>
+	</properties>
+
+	<dependencies>
+		<!-- ================================================== -->
+		<!-- Henyep Reference -->
+		<!-- ================================================== -->
+		<dependency>
+			<groupId>com.henyep</groupId>
+			<artifactId>ib-terminal-api</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+	</dependencies>
+
+
+<!--  -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${basedir}/src/main/webapp/WEB-INF/lib
+							</outputDirectory>
+						</configuration>					
+					</execution>
+
+				</executions>
+			</plugin>
+		</plugins>
+		<finalName>ib_terminal_web</finalName>
+	</build>
+
+
+
+</project>

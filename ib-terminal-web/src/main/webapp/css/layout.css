@@ -1,0 +1,736 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{ font-family:"Arial","Microsoft Yahei"; }
+html,body{ height: 100%; }
+*{ transition:all 0.5s ease 0s;}
+.clear{ clear: both; overflow: hidden; font-size: 0; line-height: 0; width:0; height:0; }
+a {outline: none;text-decoration:none; color: #bd1b2d;}
+a:active {star:expression(this.onFocus=this.blur());}
+img {border: 0 none;}
+a:focus,button,input {outline: none; }
+a:hover,a:focus{ color: #bd1b2d; text-decoration:underline; }
+.errorPrompt{ color: #bd1b2d ; }
+
+
+/*=========Login page==========*/
+
+.login-position{ max-width:303px; margin:0px auto; }
+.login .logo{ max-width: 186px; margin: 0 auto 48px auto; }
+.login-bg{ background:#000 url(../images/loginbg.jpg) center no-repeat; width: 100%; background-size: 140em; height: 100%;  }
+.login .container{ max-width: 303px; height:360px;  padding: 0px; position: absolute; top: 50% ; left: 50%; margin: -220px 0 0 -151.5px}
+.login-input-bg{ background-color:rgba(255,255,255,0.3);  height: 157px; border-radius: 0.5em; }
+.control-group{ position: relative; }
+.login-input { position: relative; margin-top: -128px; padding:0 20px;  }
+.login-input input{ background-color:rgba(0,0,0,0.7); line-height: 40px; height: 40px; color: #fff; border:solid #d5d5d5 1px; text-indent: 1.5em; font-size: 13px; overflow: hidden; }
+.login-input input.userinput{  border-width: 1px 1px 0px 1px; border-radius: 0.3em 0.3em 0em 0em;   }
+/*.control-group input:focus{ border-color: #cacaca; }*/
+.login-input input:-webkit-autofill{-webkit-box-shadow: 0 0 0px 40px #383838 inset; -webkit-text-fill-color: #fff; }
+.login-input input:focus { -webkit-box-shadow: 0 0 0px 40px #383838 inset;}
+
+
+
+.login-input input.password-input{  border-radius: 0em 0em 0.3em 0.3em ;  }
+.login-input i{ position:absolute;  color: #d5d5d5; top: 13px; left: 11px; font-size: 1.2em;}
+
+.login .checkbox{ color: #2c2a28; }
+.login p.text-right{  padding: 23px 0 15px 0; font-size: 13px; }
+.login p.text-right a{ color: #fff; }
+.login .btn{ line-height: 32px; font-size: 16px; background-color:#be1b2e; border-color:#be1b2e;   }
+.login .btn:hover{ background: rgba(190,27,46,0.9);  }
+.login .btn:focus{ background: #ff4056;  }
+.login .footer-bg{ background: #000; }
+
+.loginlang{ max-width: 1050px; margin:0 auto; text-align: right; padding-top: 85px; }
+.loginlang,.loginlang a{ color: #fff; }
+.loginlang a{ margin:0 10px;  padding-left: 30px;}
+.loginlang a.icon-en{ background: url(../images/icon_en.png) left center no-repeat; }
+.loginlang a.icon-cn{ background: url(../images/icon_cn.png) left center no-repeat; }
+
+@media (max-width: 767px){
+.login .container{ margin-left:-117px;   }
+
+}
+
+@media (max-width: 320px){
+.login .container{ margin-top:-152px;   }
+
+}
+
+@media (max-height: 670px){
+.loginlang{ padding-top: 25px;   }
+
+}
+	
+
+
+/*======footer========*/
+.footer-bg{ background: #171717; text-align: center; color: #5a5a5a; line-height: 50px; position:fixed; bottom: 0px; width: 100%; z-index: 11; }
+
+
+
+/*=======Home========*/
+.page-center ul.breadcrumb{ border-bottom:solid 1px #e8e8e8; background: #fff; border-radius:0px; margin-bottom: 0px; font-size: 11px;  display:inline-block; width: 100%; }
+.page-center ul.breadcrumb a{  font-size: 11px; }
+.page-center ul.breadcrumb i.fa-angle-right{ padding:1px 3px; }
+ul.breadcrumb i.fa-home{ color: #a5a5a5; padding-right: 3px; }
+.page-center .container-fluid{ padding-left: 37px; }
+.container-fluid .title{ margin-bottom: 35px; }
+
+
+.icon-row{ width: 100%; display:inline-block; padding-left: 0px; }
+.home-center .icon-row li{  width: 25%; list-style: none; float: left; text-align: center; line-height: 24px;  margin-bottom:36px;  }
+.home-center .icon-row a{  border-radius: 4px;  min-height: 173px; display: block;  border: solid 1px #e5e5e5; margin-right: 36px;  position: relative; color: #333;    }
+.home-center .icon-row a:hover,
+.home-center .icon-row a:focus{ border:solid 1px #bd1b2d; text-decoration: none; background: #fbfbfb;   }
+
+.home-center .icon-row a i{ color: #4c4c4c; margin-top: 42px; font-size: 4em;}
+.home-center .icon-row a i.fa-circle-thin{ font-size: 3.5em; top: 6px;}
+.home-center .icon-row a i.fa-bookmark-o{ font-size: 2.5em; top: 38px; height: 12px; }
+.home-center .icon-row a p{  font-weight: bold; margin-top: 15px;}
+.home-center .icon-row a p.txtTeam{ margin-top: 113px; }
+
+
+@media (min-width: 1200px){
+.home-center{  width: 95% }
+	
+}
+
+@media (max-width: 710px){
+.home-center .icon-row a{ margin-right: 15px; }
+
+}
+
+@media (max-width: 665px){ 
+	.home-center .icon-row li{ width: 50%; }
+ }
+@media (max-width: 640px){
+	.page-center .container-fluid{ padding-left: 18px; }
+	#wrap #content .content_tocenter{ padding-left: 0px; }
+	.page-center{ padding-bottom: 80px; }
+}
+@media (max-width:319px){
+	.home-center .icon-row li{ width: 100%; margin-bottom: 10px; }
+}
+
+
+/*=======My Profile========*/
+
+.page-center .line{ border-bottom: solid 1px #6f6f6f; position:relative; top: -11px; }
+.page-center .line b{ padding: 3px 0 7px 0; display: inline-block; }
+.profile{ max-width: 470px; margin-top: 24px; }
+.profile label{ width: 160px; display: block; line-height: 33px; font-weight: normal; float: left;   }
+.profile label span{  color: #f00; font-size: 18px; padding-right: 6px; display: block; float: left; padding-top: 5px; height: 20px; }
+.profile input,.profile select{ max-width: 300px; margin-bottom: 8px; border-radius: 0px; height: 30px;  box-shadow: 0px 0px 0px ; }
+.balanceTransferProfile{ max-width: 700px; margin-top: 24px; }
+.balanceTransferProfile label{ width: 160px; display: block; line-height: 33px; font-weight: normal; float: left;   }
+.balanceTransferProfile input{ display: inline-block; width: 300px; margin-bottom: 8px; border-radius: 0px; height: 30px;  box-shadow: 0px 0px 0px ;}
+.balanceTransferProfile .error{ display: inline-block; float: none; width: auto; color:red; margin-left: 3px}
+.balanceTransferProfile .error.form-control{ display: inline-block; float: left; width: 300px;}
+
+a.btn{ border-color:#be1b2e; padding: 7px 0px; min-width: 150px; border-radius: 0px; margin-top: 30px;   }
+.profile input:focus,.profile select:focus{ border-color: #bd1b2d ; box-shadow: 0px 0px 0px ; }
+a.btn-red{ background: #be1b2e; color: #fff; margin-right:10px;  }
+a.btn-red:hover{ background: #dc2237; color: #fff; border-color: #dc2237; }
+a.btn-red:focus{ color: #fff; }
+
+a.btn-gray{ background: #b3b3b3; border-color: #b3b3b3; margin-right:10px; color: #fff; cursor:default;}
+a.btn-gray:hover{ color:#fff; }
+
+.container-fluid .form-control{ padding: 0 12px; }
+
+@media (max-width: 640px){
+	.profile{ width: 100%; max-width:100% !important;}
+	.profile label{ width: 100%; line-height:1em; float: none; }
+	.profile input,.profile select{ width:100%; margin-bottom: 12px; max-width:100% !important; }
+}
+@media (max-width: 360px){
+	a.btn{ width: 47%;  min-width: auto;}
+}
+
+/*=======My Package========*/
+
+.package { width: 95%;  }
+
+.package table{ width: 100%;  }
+.package table tr td{ padding:7px 19px; }
+.package i.fa-chevron-right{  font-weight: bold; padding-right: 8px; }
+.package .font-web td{ font-weight: bold; }
+.package .tr-titileBg{ background: #ececec; font-size: 16px; font-weight: bold; color: #3d3d3d; text-transform: uppercase; }
+.package span{ width: 35px; display: block; float: left; }
+@media (max-width: 640px){
+
+	.package { width: 100%;  }
+}
+
+@media (max-width: 380px){
+
+	.package table tr td { padding:7px 5px; }
+}
+
+/*=======My Agreement========*/
+
+.agreement .alert{ padding: 9px 10px; border-radius: 0px; position: relative; }
+.agreement .alert-success{ background: #edffed;border:solid 1px #bfe3bf; color: #60b156;  }
+.agreement i.fa-check-circle{ padding-right: 10px; font-size: 1.1em; }
+.agreement .agree-close{ float:right; position:relative;cursor: pointer; }
+.agreement i.fa-circle-thin{ font-weight: normal; font-size: 1.5em; }
+.agreement i.fa-close{ font-size:0.9em; top:2px; }
+
+.agreement dl{ margin-top: 10px; display: inline-block; width: 100%; }
+.agreement dl dd{ float: left; margin-right: 18px; width: 52px; min-height: 115px; }
+.agreement dl dt{ padding-top: 2px; }
+.agreement dl dt a{ color: #a60100; text-transform: uppercase; text-decoration: underline; ;}
+.agreement dl dt p{ font-weight: normal; line-height: 16px;   margin-top: 5px}
+
+
+/*=======MT4========*/
+
+
+.mt4-center li{ list-style: none; width:23%; float: left; display: block;  text-align: center; margin-right: 2%; margin-bottom: 10px;}
+.mt4-center li a{ border: solid 1px #e5e5e5; display: block; min-height: 250px;}
+.mt4-center li i{ font-size: 3.5em; color: #4c4c4c; padding: 60px 0}
+.mt4-center li a p{ font-size: 18px; text-decoration: underline; color: #a60100; }
+.mt4-center li a:hover,.mt4-center li a:focus{ border:solid 1px #bd1b2d; background: #fbfbfb; }
+@media (max-width: 640px){
+
+	.mt4-center li { width: 48% }
+}
+
+@media (max-width: 319px){
+
+	.mt4-center li { width: 100% }
+}
+
+/*=======[link]Client Registration Link========*/
+
+.client-reg ul{ padding-left: 0px; display: inline-block; width: 100%; }
+.client-reg ul li{ list-style: none; float: left; width: 47%; background: #f9f9f9; border-left:solid 2px #2068b4; padding:23px 0 0 20px; margin:0 35px 20px 0; min-height: 155px; padding-bottom: 15px; position: relative; }
+.client-reg ul li p{ font-weight: bold; font-size: 16px;  }
+.client-reg ul li a{ color: #a60000; text-decoration: underline;   display:inline-block;  }
+.client-reg li .link{ max-width: 400px;/*  border: solid 1px #000; */ min-height: 40px; }
+
+.client-reg ul li.marginRNone{ margin-right: 0px; }
+.client-reg a.btn{ margin-top: 7px; color: #fff; text-decoration: none;  }
+
+@media (min-width: 1568px){
+	
+	.client-reg a.btn{  right:0px; top: 33px; position: absolute;   }
+	.client-reg ul li{ min-height: 100px;  }
+
+}
+
+@media (max-width: 670px){
+	.client-reg ul li{ margin-right: 20px; width: 48% }
+}
+
+@media (max-width: 550px){
+	.client-reg ul li{ width: 100% }
+}
+
+/*=======[link]Sub IB Registration Link========*/
+
+.select{ margin-bottom: 13px; }
+.select .none{ display:none;}
+.select span{ display:inline-block;  width: 110px; line-height:30px;}
+.select ul{ display:inline-block; padding-left: 0px;}
+.select ul li{ margin-right:10px; display:inline-block;}
+.select dl{ margin-bottom: 0px; }
+.select .return_reques{ position:relative;}
+.select .return_reques input{width:190px;height:30px;text-indent:0.5em;   border:1px solid #ccc; line-height:30px;}
+.select .return_reques .local{ background:url("../images/icon_select.png") right center no-repeat; cursor: pointer;}
+.select .return_reques .bomb_con_style{ background-color:#fff; position:absolute;left:0px;z-index:99; cursor:pointer;f3478c; border:1px solid #ccc; height:auto; overflow:auto;}
+.select .return_reques .bomb_con_style dd{height:28px;line-height:28px;  text-indent:0.5em;  }
+.select .return_reques .bomb_con_style dd:hover{ background-color:#ebebeb; }
+
+.subLink{ margin-top:40px; }
+.subLink span{ width: 91px; line-height: 30px; }
+.subLink input{ width: 100%; border:solid 1px #ccc; height: 30px;}
+.subLink input:focus{ border:solid 1px #bd1b2d ; box-shadow: 0px 0px 0px;  }
+
+@media (min-width: 676px){
+.subLink input{ width: 470px; }
+
+}
+@media (max-width: 675px){
+.subLink{ margin-top:20px; }
+}
+
+/*=======[Fund]Withdrawal========*/
+.profile.withdrawal{ max-width: 100%; }
+.withdrawal h4{ margin-top: 40px; border-top: dotted 1px #ccc; padding: 35px 0 20px 0}
+.withdrawal .withdrawal-table a.btn{ margin-top: 0px; padding: 2px 0; min-width: 92px;}
+
+
+
+/*=======Contact Us========*/
+
+.contact{ border: solid 1px #e7e7e7; width: 95%; min-height: 166px; }
+.contact p{ float: left; width: 196px; text-align: center; line-height: 166px;border-right: solid 1px #e7e7e7; margin-right: 58px; }
+.contact ul{   padding-top: 36px; }
+.contact ul li{ list-style: none; line-height: 1.6em; }
+.contact ul h5{text-transform: uppercase; font-size: 15px; font-weight:bold; padding-bottom: 4px;}
+.contact ul li a{ color: #a60100; text-decoration: underline; }
+.contact ul li span{ width: 33%; float: left; display: block; }
+
+@media (max-width: 640px){
+	.contact { width: 100% }
+	.contact ul li span{ width: 15%; }
+}
+
+@media (max-width: 520px){
+.contact p{ width: 146px; margin-right: 20px;  }
+}
+	
+@media (max-width: 380px){
+	.contact p{ float:none; width: auto; border-right: none;  margin-right: 0px; line-height: 80px; padding-top: 15px; }
+	.contact ul{ padding: 10px 0 20px 0px; max-width: 190px; margin:0 auto; }
+	.contact ul li span{ width: auto; }
+
+}
+
+
+/*=======IB Registration========*/
+.IbReg #content_center{ padding: 51px 0  0 86px; }
+@media (min-width: 0px){
+	.IbReg .menu{ height: 78px; }
+	.IbReg .menu .logo{  width: 265px; }
+}
+@media (max-width: 640px){
+	.IbReg #content_center{ padding: 31px 0  0 0px; }
+}
+
+
+/*=======Change Password========*/
+.profile.ChangePassword{ max-width: 500px; }
+.ChangePassword label{ width: 200px; }
+
+
+/*=========foget Password=========*/
+.profile.fogetPassword.widMax{ max-width: 100%; }
+.foget-password #content_center{ padding: 40px 0  0 12px; }
+
+
+
+/*=======[Client]  Client Margin In/Ou========*/
+
+.client h4,.withdrawal h4{ font-size: 16px; font-weight:bold; height: 26px; }
+.client h4 i.fa-chevron-right,.withdrawal h4 i.fa-chevron-right{ padding-right: 3px; }
+
+.select.search{ border-bottom: dotted 1px #ccc; padding-bottom: 16px;  display: inline-block; width: 100%;}
+.select.search .per-wid44,.select.search .wid150,.select.search .per-wid30{  float: left;  }
+.select.search .per-wid44{ width: 44%; }
+.select.search .wid150{ width: 150px; float: left; }
+.select.search .per-wid30{ width: 30%; }
+.select.search span{ width:auto; text-align: center; }
+.select.search .return_reques input{ border-color: #696969; }
+.select.search .return_reques .local{ width: 118px; background: none; }
+.select.search .return_reques .local.Wid163{ width: 163px; }
+.select.search .return_reques i.fa-caret-down{ position:absolute; right: 7px; top: 8px; color: #696969; font-size: 1.2em; }
+.select.search .download-searchBtn .dowloadError{display:inline-block; color:red;}
+.client i.fa-search{ padding-right: 15px; font-weight: normal;  }
+.client a.btn{ margin-top:0px; top: -5px; position: relative; }
+
+
+.client-details ul{ padding-left: 0px; width: 100%; display: inline-block;}
+.client-details ul li{ list-style: none; float: left; width: 33.3%; display: block; }
+
+.details-table{ }
+.details-table table,.commissionMax-table table { width: 100%; border:solid 1px #e7e7e7; }
+.details-table table th,.commissionMax-table th{ padding:12px 13px;background: #e7e7e7; border-right: solid 1px #ddd; text-align: center; }
+.details-table table th.borRnone,.commissionMax-table table th.borRnone{ border-right: none ; }
+.details-table table td{padding:12px 13px; word-break: break-all; word-wrap:break-word; border:solid #ddd; border-width: 1px 1px 1px 0px; text-align: center;}
+.commissionMax-table table td{ padding:10px 5px; border: solid #e7e7e7; border-width:0 1px 1px 0;}
+.commissionMax-table tr:nth-of-type(even) { background: #f9f9f9; }
+
+.client label{font-weight: normal; line-height: 30px;}
+.client input{  height: 30px; border:solid 1px #696969 ; }
+.client input:focus{ border:solid 1px #bd1b2d ; box-shadow: 0px 0px 0px ; }
+
+.client-date{/*  width: 36%; float:left; */}
+.client-date .input-group{ float: left; position: relative; margin-right: 10px; }
+.client-date label{ margin-right: 5px; }
+.client-date input{  width: 118px; text-indent: 0.5em; }
+.client-date .input-group-addon{ padding: 0; border: none;right: 5px; position:absolute; background: none; }
+.datetimepicker {transition:date 0s; }
+.select.search .per-wid44 br{ display: none; }
+
+@media only screen and (max-width: 1190px){
+.select.search .per-wid44{ width: 60%; }
+.select.search .per-wid30{ width: 40%; }
+.select.search .wid150{ margin-top: 15px; }
+
+}
+
+
+@media only screen and (max-width: 760px){
+	.select.search .per-wid44,.select.search .wid150,.select.search .per-wid30{ width: 100% }
+	.select.search .per-wid30{ margin-top: 5px; }
+	.details-table table { border:none; }
+	.details-table table td{padding:12px 0px; display: flex;  display: -webkit-box; border:none;}
+  	.details-table table, .details-table thead, .details-table tbody, .details-table th, .details-table td, .details-table tr { display: block; }
+    .details-table thead tr { position: absolute; top: -9999px; left: -9999px; }
+    .details-table tr { border: 1px solid #ddd ; margin-bottom: 10px; }
+    
+    .details-table td:before {  /* float: left; */ padding-right: 10px; white-space: nowrap; display:block;font-weight: bold;  width: 46%; text-align: left; padding-left:10px;  }
+    
+	.details-table td:nth-of-type(odd) { background: #f9f9f9; }
+    .details-table.client-margin-InOut td:nth-of-type(1):before { content: "Client Code"; }
+    .details-table.client-margin-InOut td:nth-of-type(2):before { content: "Trade Date"; }
+    .details-table.client-margin-InOut td:nth-of-type(3):before { content: "Currency"; }
+    .details-table.client-margin-InOut td:nth-of-type(4):before { content: "Amount"; }
+
+
+/*============Client Trade History==========*/
+    .details-table.client-trade td:nth-of-type(1):before { content: "Ticket"; }
+    .details-table.client-trade td:nth-of-type(2):before { content: "Client Code"; }
+    .details-table.client-trade td:nth-of-type(3):before { content: "Symbol"; }
+    .details-table.client-trade td:nth-of-type(4):before { content: "Buy/Sell"; }
+    .details-table.client-trade td:nth-of-type(5):before { content: "Lot"; }
+    .details-table.client-trade td:nth-of-type(6):before { content: "Open Time"; }
+    .details-table.client-trade td:nth-of-type(7):before { content: "Close Time"; }
+    .details-table.client-trade td:nth-of-type(8):before { content: "Open Price"; }
+    .details-table.client-trade td:nth-of-type(9):before { content: "Close Price"; }
+    .details-table.client-trade td:nth-of-type(10):before { content: "P/L"; }
+    .details-table.client-trade td:nth-of-type(11):before { content: "Commission"; }
+    .details-table.client-trade td:nth-of-type(12):before { content: "Swap"; }
+
+
+/*============Commission Summary==========*/
+    .details-table.summary-table td:nth-of-type(1):before { content: ""; }
+    .details-table.summary-table td:nth-of-type(2):before { content: "Commission"; }
+    .details-table.summary-table td:nth-of-type(3):before { content: "Rebate"; }
+    .details-table.summary-table td:nth-of-type(4):before { content: "Total Lot"; }
+    .details-table.summary-table td:nth-of-type(5):before { content: "Net Margin In"; }
+    .details-table.summary-table td:nth-of-type(6):before { content: "Margin In"; }
+    .details-table.summary-table td:nth-of-type(7):before { content: "Margin Out"; }
+
+
+    .details-table.summary-table2 td:nth-of-type(1):before { content: ""; }
+    .details-table.summary-table2 td:nth-of-type(2):before { content: "Group Code"; }
+    .details-table.summary-table2 td:nth-of-type(3):before { content: "Ev Commission"; }
+    .details-table.summary-table2 td:nth-of-type(4):before { content: "Ev %"; }
+    .details-table.summary-table2 td:nth-of-type(5):before { content: "Equity Change"; }
+    .details-table.summary-table2 td:nth-of-type(6):before { content: "Fix Commission"; }
+    .details-table.summary-table2 td:nth-of-type(7):before { content: "Rebate"; }
+    .details-table.summary-table2 td:nth-of-type(8):before { content: "Deficit"; }
+    .details-table.summary-table2 td:nth-of-type(9):before { content: "Credit Card Charges"; }
+    .details-table.summary-table2 td:nth-of-type(10):before { content: "Deposit Bonus"; }
+    .details-table.summary-table2 td:nth-of-type(11):before { content: "Margin Bonus"; }
+
+    .details-table.commisDetails-table td:nth-of-type(1):before { content: "IB Code"; }
+	.details-table.commisDetails-table td:nth-of-type(2):before { content: "Name"; }
+    .details-table.commisDetails-table td:nth-of-type(3):before { content: "Net Margin In"; }
+    .details-table.commisDetails-table td:nth-of-type(4):before { content: "Commission"; }
+    .details-table.commisDetails-table td:nth-of-type(5):before { content: "Rebate"; }
+    .details-table.commisDetails-table td:nth-of-type(6):before { content: "Total Lot (Team Members)"; }
+    .details-table.commisDetails-table td:nth-of-type(7):before { content: "P/L (Team Members)"; }
+    .details-table.commisDetails-table td:nth-of-type(8):before { content: "Referral Commission"; }
+    .details-table.commisDetails-table td:nth-of-type(9):before { content: "Referral Rebate"; }
+
+    .details-table.commission-summary-table td:nth-of-type(1):before { content: "Client Code"; }
+    .details-table.commission-summary-table td:nth-of-type(2):before { content: "Total Lot"; }
+    .details-table.commission-summary-table td:nth-of-type(3):before { content: "Net Margin In"; }
+    .details-table.commission-summary-table td:nth-of-type(4):before { content: "P/L"; }
+    .details-table.commission-summary-table td:nth-of-type(5):before { content: "Commission"; }
+    .details-table.commission-summary-table td:nth-of-type(6):before { content: "Rebate"; }
+
+		
+	/* =======ClientDeatils ======*/
+
+	/*.details-table.commission-ClientName-table td:nth-of-type(1):before { content: "Client Information"; }
+	.details-table.commission-ClientName-table td:nth-of-type(2):before { content: "Client Code"; }
+    .details-table.commission-ClientName-table td:nth-of-type(3):before { content: "Name"; }
+	.details-table.commission-ClientName-table td:nth-of-type(4):before { content: "Phone"; }*/
+
+
+	.details-table.commission-ClientDeatils-table td:nth-of-type(1):before { content: "Date"; }
+    .details-table.commission-ClientDeatils-table td:nth-of-type(2):before { content: "Net Margin In"; }
+
+
+	/* ======= Commission Enquiry ======*/
+
+	.details-table.per-summary-table td:nth-of-type(1):before { content: "IB Code"; }
+    .details-table.per-summary-table td:nth-of-type(2):before { content: "Product"; }
+    .details-table.per-summary-table td:nth-of-type(3):before { content: "Total Lot"; }
+    .details-table.per-summary-table td:nth-of-type(4):before { content: "Currency"; }
+    .details-table.per-summary-table td:nth-of-type(5):before { content: "Commission"; }
+    .details-table.per-summary-table td:nth-of-type(6):before { content: "Rebate"; }
+    .details-table.per-summary-table td:nth-of-type(7):before { content: "Total"; }
+
+    .details-table.per-ClientSummary-table td:nth-of-type(1):before { content: "Client Code"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(2):before { content: "Product"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(3):before { content: "Total Lot"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(4):before { content: "Currency"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(5):before { content: "Commission"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(6):before { content: "Rebate"; }
+    .details-table.per-ClientSummary-table td:nth-of-type(7):before { content: "Total"; }
+
+    .details-table.per-Detaile-table td:nth-of-type(1):before { content: "Client Ib Code"; }
+    .details-table.per-Detaile-table td:nth-of-type(2):before { content: "Product"; }
+    .details-table.per-Detaile-table td:nth-of-type(3):before { content: "Total Lot"; }
+    .details-table.per-Detaile-table td:nth-of-type(4):before { content: "Currency"; }
+    .details-table.per-Detaile-table td:nth-of-type(5):before { content: "Commission"; }
+    .details-table.per-Detaile-table td:nth-of-type(6):before { content: "Rebate"; }
+    .details-table.per-Detaile-table td:nth-of-type(7):before { content: "Trade P/L"; }
+
+
+
+	/* =======Withdrawal======*/
+
+	.details-table.withdrawal-table td:nth-of-type(1):before { content: "Request Date"; }
+    .details-table.withdrawal-table td:nth-of-type(2):before { content: "Currency"; }
+    .details-table.withdrawal-table td:nth-of-type(3):before { content: "Request Amount"; }
+    .details-table.withdrawal-table td:nth-of-type(4):before { content: "Status"; }
+    .details-table.withdrawal-table td:nth-of-type(5):before { content: ""; }
+
+	/* =======My Lead======*/
+    .details-table.lead-table td:nth-of-type(1):before { content:"IB Code" }
+    .details-table.lead-table td:nth-of-type(2):before { content:"Client Name" }
+    .details-table.lead-table td:nth-of-type(3):before { content:"Phone No." }
+    .details-table.lead-table td:nth-of-type(4):before { content:"Email" }
+    .details-table.lead-table td:nth-of-type(5):before { content:"Register Date" }
+    .details-table.lead-table td:nth-of-type(6):before { content:"Demo/Live" }
+    .details-table.lead-table td:nth-of-type(7):before { content:"Status" }
+
+	
+	/* =======White Label [Documents Download]======*/
+    .details-table.documents-download td:nth-of-type(1):before { content:"Trading ID" }
+    .details-table.documents-download td:nth-of-type(2):before { content:"First Name" }
+    .details-table.documents-download td:nth-of-type(3):before { content:"Last Name" }
+    .details-table.documents-download td:nth-of-type(4):before { content:"Registration Date" }
+    .details-table.documents-download td:nth-of-type(5):before { content:"Download" }
+
+  }
+
+
+
+
+
+@media only screen and (max-width: 560px){
+	.client-details ul li{ width: 50%; }
+}
+  
+@media only screen and (max-width: 380px){
+	.select.search .per-wid44 br{ display:inline; }
+	.client-date label { min-width: 78px; text-align: left; }
+	.client-date input{ width: 163px; }
+	.client-details ul li{ width: 100%; }
+	
+}
+@media only screen and (max-width: 305px){
+	.client-date .input-group{ width: 163px }
+}
+
+
+
+/*===========[client]Client Trade History==========*/
+
+@media only screen and (max-width: 1140px){
+	.details-table.client-trade table th,.details-table.client-trade table td{ padding: 12px 5px; }
+}
+
+/*===========[client]Client Profile==========*/
+
+.client-profile{margin-bottom: 20px;}
+.client-profile a.btn{ margin:0px }
+.client-profile.select .return_reques .local { width: 300px; margin-bottom: 0px; }
+
+@media only screen and (max-width: 640px){
+	.client-profile.select ul,.client-profile.select .return_reques,.client-profile.select .return_reques .local{ width: 100%; }
+
+}
+
+@media only screen and (min-width: 641px){
+	.client-profile{ position: relative;  margin-bottom: 30px;}
+	.client-profile a.btn{  position:absolute; right: -190px; top: -6px; }
+	
+}
+@media only screen and (min-width: 641px) and (max-width: 729px){
+	.client-profile a.btn{ right: -100px; min-width:100px; }
+}
+
+
+
+/*===========[Commission]Commission Enquiry==========*/
+.summary-table td br{ display: none; }
+.summary-table2{ margin: 20px 0 27px 0; }
+
+.commission-details a.btn{ min-width: 207px; top: 0px; margin-bottom: 25px; margin-right: 10px; }
+.commission-table,.commission-list{ float: left; }
+.commission-table table{ border:none;}
+
+.commission-table{ width: 79%; margin-right: 10px;}
+.commission-table table{ /* min-height: 267px; */ }
+/*.commission-table table tr{ max-height: 36px; }*/
+
+
+.commission-list table{min-height: 111px;}
+.commission-list{ width: 20%; margin-top: 43px; }
+.commission-list ul li{ width: 50%; }
+
+
+@media only screen and (max-width: 1499px) and (min-width:1200px){
+	/*.commission-table{ width: 69%}*/
+	.commission-list{ width: 27%; }
+}
+
+@media only screen and (max-width: 1285px){
+	.details-table.commisDetails-table table th,.details-table.commisDetails-table table td{ padding: 12px 5px; }
+}
+
+@media only screen and (max-width: 1085px){
+	.details-table.summary-table2 table th,.details-table.summary-table2 table td{ padding: 12px 5px; }
+
+}
+@media only screen and (max-width: 1199px){
+	.commission-table,.commission-list{ width: 100%; }
+	.commission-list table,.commission-table table{ min-height:auto; }
+	.commission-list{ margin:20px 0 40px 0; }
+
+}
+@media screen and ( min-width: 1127px){
+	.details-table.commission-ClientName-table table td{ padding: 12px 9px; }	
+}
+
+@media only screen and (max-width: 390px){
+	.summary-table td br{ display: inline; }
+
+}
+
+
+/*@media screen and (min-width: 1330px){
+	.client{ width: 95%; }
+}*/
+
+
+
+
+
+
+/*===========IB Performance==========*/
+
+.ib-performance .select.search{ border-bottom: none; }
+
+
+/*left*/
+.ib-tree{ float: left; background: #fff; border: solid 1px #e7e7e7; min-height: 452px;  width: 230px; margin-right: 10px;}
+.ib-tree h3{ background: #e7e7e7; line-height: 39px; margin-top: 0px; text-indent: 0.8em; font-size: 16px; font-weight: bold; }
+.st_tree{ padding:10px;}
+.st_tree a{ color:#333; text-decoration:none; }
+.st_tree a:hover{color:#000;}
+.st_tree ul{ /*padding:0 0 0 8px;*/ margin:0;}
+.st_tree ul li{ cursor:pointer;list-style:none; background:url(../images/icon_ren.jpg) 0 3px no-repeat; /* padding:0 0 3px 20px*/}
+.st_tree .folder{ list-style-image:url(../images/tree_icon.png); background:url(../images/icon_folder.png) 0 3px no-repeat; padding:0 0 0 20px;}
+.st_tree .open{ list-style-image:url(../images/tree_icon_open.png); background:url(../images/folder_open.png) 0 3px no-repeat; padding:0 0 0 20px;}
+.st_tree .hover{background-color:#eee;}
+
+/*right*/
+.ib-perSummary{ width: 78%; float: left; }
+
+.ib-perSummary ul.nav-tabs li a{ font-size: 16px; font-weight: bold;  margin-right: 2px; background: #e7e7e7; color: #333;}
+.ib-perSummary .nav-tabs{ border-color: #e7e7e7; }
+.ib-perSummary ul.nav-tabs li.active a{ background:#fff;  }
+.ib-perSummary ul.nav-tabs li:nth-child(3) a{ margin-right: 0px; }
+.ib-tab-content dl{  display: inline-block; width: 100%; padding-top: 15px; margin-bottom: 8px; }
+.ib-tab-content dl dd{ width: 20%; float: left; text-indent: 1em; }
+
+.ib-perSummary .ib-tab-content{ border-style: solid; border-color: #e7e7e7; border-width: 0 1px 1px 1px; min-height: 408px;}
+
+.details-table.per-summary-table table{ border:none; }
+
+.ib-performance{ display:table; width: 100%; }
+
+
+@media (min-width: 1200px) and ( max-width: 1500px){
+	.ib-perSummary{ width: 71%; }
+}
+@media (max-width: 1199px){
+	.ib-tree,.ib-perSummary{ width: 100%; }
+	.ib-tree{ min-height: auto; margin-bottom: 10px; }
+}
+
+@media (min-width: 761px) and ( max-width: 1280px){
+	.details-table.per-summary-table table th,.details-table.per-summary-table table td{ padding: 12px 5px;  }
+}
+
+@media (max-width: 760px){
+	.ib-tab-content .details-table tr{ border-width:1px 0px;  }
+	.ib-tab-content dl dd{ width: 33.3%; }
+	
+	.ib-perSummary .ib-tab-content{ border-bottom-width:0px;}
+}
+
+@media (max-width: 392px){
+	.ib-tab-content dl dd{ width: 50%; }
+	.ib-perSummary .nav li a{ padding:10px 3px;  }
+	.ib-perSummary .nav li:nth-child(3) a{ padding:10px 4.3px;   }
+}
+
+@media (max-width: 319px){
+	.ib-tab-content dl dd{ width: 100%; }
+	.ib-perSummary ul.nav-tabs li a{ font-size: 14px; }
+	.ib-perSummary .nav li a{ padding:10px 0px;  }
+}
+
+
+/*@media (min-width:761px) {
+	.ib-tab-content .details-table tr:nth-of-type(even) { background: #f9f9f9; }
+	
+}*/
+@media (min-width: 759px){
+	.ib-performance .select.search .wid150{ margin-top: 0px; }
+
+}
+
+.table-hover div{ text-align: right; }
+
+/*===========table txt right==========*/
+
+@media (min-width: 761px){
+	.details-table.client-margin-InOut table td:nth-child(4),
+	.details-table.summary-table table td:nth-child(n+2),
+	.details-table.summary-table2 table td:nth-child(n+3),
+	.details-table.commisDetails-table table td:nth-child(n+3),
+	.details-table.commission-summary-table table td:nth-child(n+2),
+	.details-table.client-trade table td:nth-child(5),
+	.details-table.client-trade table td:nth-child(n+8),
+	.details-table.commission-ClientDeatils-table table td:nth-child(2),
+	.details-table.withdrawal-table table td:nth-child(3),
+	.details-table.per-summary-table table td:nth-child(3),
+	.details-table.per-ClientSummary-table table td:nth-child(3),
+	.details-table.per-Detaile-table table td:nth-child(3),
+	.details-table.per-summary-table table td:nth-child(n+5),
+	.details-table.per-ClientSummary-table table td:nth-child(n+5),
+	.details-table.per-Detaile-table table td:nth-child(n+5)
+	{ text-align: right;  }
+
+
+	.details-table table td div{ max-width: 155px; }
+
+	.details-table tr:nth-of-type(even){ background: #f9f9f9; }
+}
+	
+.container-fluid .table-hover>tr:hover{ background-color: #f5f5f5; }
+.ib-tab-content .table-hover>tr:hover,
+.commission-table .table-hover>tr:hover{ cursor:pointer;  }
+
+
+.ib-tab-content #deatils .table-hover>tr:hover{ cursor: inherit; }
+
+
+/* =======White Label [Documents Download]======*/
+
+.select.search .download-date{ width: 350px; float: left; }
+.download-all ul { padding-left: 0px; display: inline-block; width: 100%; }
+.download-all ul li{ list-style: none; float: left; line-height: 32px;  }
+.download-all ul li.floatR{ float: right; }
+.download-all ul li a{  text-align: right; border:solid 1px #be1b2e; margin:0 0 0 30px; padding: 5px 10px; }
+
+
+@media only screen and (max-width: 540px){ 
+	.select.search .download-date{ width: 100% }
+	.select.search .download-searchBtn {margin-top: 15px; display: inline-block; width: 100%;}
+	.download-all ul li{ width: 100%; margin-bottom: 8px; }
+	.download-all ul li a{ margin:0 0 0 0px ; }
+ }

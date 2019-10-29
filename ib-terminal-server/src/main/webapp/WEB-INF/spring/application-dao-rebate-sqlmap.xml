@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="RebateDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO rebate
+					(rebate_code, brand_code, ignore_tree_rebate, description, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, now(), ?)
+					
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE rebate SET last_update_time = now(), description = ?, last_update_user = ?, brand_code = ?, ignore_tree_rebate = ?
+					WHERE id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM rebate
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM rebate WHERE id = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByRebateCode">
+					<value><![CDATA[
+					SELECT * FROM rebate WHERE rebate_code = ?
+					]]></value>
+				</entry>
+				
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM rebate WHERE id = ?
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbCommissionCpaDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_commission_cpa
+					(brand_code, ib_code, client_code, trade_date, currency, total_lot, total_deposit, amount, min_lot, min_deposit, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_commission_cpa SET trade_date = ?, currency = ?, total_lot = ?, total_deposit = ?, amount = ?, min_lot = ?, min_deposit = ?, last_update_time = ?, last_update_user = ?
+					WHERE brand_code = ? AND ib_code = ? AND client_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_cpa
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_commission_cpa WHERE brand_code = ? AND ib_code = ? AND client_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_commission_cpa WHERE brand_code = ? AND ib_code = ? AND client_code = ?
+					]]></value>
+				</entry>
+				
+				
+				<entry key="deleteByDate">
+					<value><![CDATA[
+					DELETE FROM ib_commission_cpa WHERE trade_date = ?
+					]]></value>
+				</entry>
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

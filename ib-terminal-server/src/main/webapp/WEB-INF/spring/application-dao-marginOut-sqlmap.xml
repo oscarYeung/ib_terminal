@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="MarginOutDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO margin_out
+					(brand_code, category, method, account, currency, amount, account_currency, exchange_rate, account_amount, trade_date, status, batch_file_id, comment, create_user, create_time, last_update_user, last_update_time)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?, now())
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE margin_out SET brand_code = ?, category = ?, method = ?, account = ?, currency = ?, amount = ?, account_currency = ?, exchange_rate = ?, account_amount = ?, trade_date = ?, status = ?, batch_file_id = ?, comment = ?, last_update_user = ?, last_update_time = now()
+					WHERE id = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM margin_out
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM margin_out WHERE id = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM margin_out WHERE id = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByDateRange">
+					<value><![CDATA[
+					SELECT * FROM margin_out WHERE trade_date >= ? AND trade_date <= ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByBatchFileId">
+					<value><![CDATA[
+					SELECT * FROM margin_out WHERE batch_file_id = ?;
+					]]></value>
+				</entry>
+				
+				<entry key="selectByIbCodeStatus">
+					<value><![CDATA[
+					SELECT * FROM margin_out WHERE account = ? AND status = ?
+					]]></value>
+				</entry>
+				
+				<entry key="getMaxWithdrawal">
+					<value><![CDATA[
+					SELECT iad.ib_code, iad.account_balance, IFNULL(mo.pending_margin, 0) as pending_margin
+					FROM (select sum(amount) as pending_margin from margin_out where account = ? and status = 'P') mo, 
+					ib_account_details iad
+					WHERE iad.ib_code = ?
+					]]></value>
+				</entry>
+				
+				
+				<entry key="getAllMaxWithdrawal">
+					<value><![CDATA[
+					select ib_code, account_balance, ifnull(sum(amount), 0) as pending_margin 
+					from 
+					(
+						select * from ib_account_details iad
+						left join (select account, amount from margin_out where status = 'P') mo on iad.ib_code = mo.account
+					) a
+					group by ib_code;
+					]]>
+					</value>
+				</entry>
+				
+				<entry key="selectByUserCode">
+					<value><![CDATA[
+					SELECT * FROM margin_out 
+					WHERE account in (
+						SELECT B.ib_code
+						FROM ib_tree A
+						LEFT JOIN ib_tree B
+						ON B.min_id >= A.min_id AND B.max_id <= A.max_id
+						where A.id in 
+						(
+							#team_head_ids
+						)
+					)
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

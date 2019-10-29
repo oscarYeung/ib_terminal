@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbProfileHistoryDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_profile_history (address,brand_code,chinese_name,country,create_time,email,first_name,language,last_name,
+					last_update_user,mobile,password,sex,status,username,ib_code,version) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) 
+					]]></value>
+				</entry>
+				<entry key="selectMaxVersionByCode">
+					<value><![CDATA[select ifnull((select max(version)+1 from ib_profile_history where ib_code=? group by ib_code),1)]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_profile_history SET sex = ?, status = ?, password = ?, brand_code = ?, version = ?, chinese_name = ?, country = ?, first_name = ?, username = ?, email = ?, address = ?, last_name = ?, last_update_user = ?, language = ?, ib_code = ?, mobile = ?
+					WHERE 
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_profile_history
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_profile_history WHERE 
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_profile_history WHERE 
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

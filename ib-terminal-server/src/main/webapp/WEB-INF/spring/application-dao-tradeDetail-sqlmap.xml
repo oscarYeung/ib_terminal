@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="TradeDetailDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO trade_detail
+					(delete_time, open_ip, open_price, mktprice_close, close_input_time, open_time, close_trade_date, take_profit, terminal, close_turnover, settle_currency, stop_loss, price_decimal, commission, symbol_id, trade_type_id, equity_after_closed, status, close_report_date, open_turnover, margin_rate, agent_commission, update_time, used_margin_before_closed, trade_account_id, open_trade_date, comment, close_input_user, balance_before_closed, balance_after_closed, mktprice_open, close_commission, original_symbol, used_margin_after_closed, free_margin_after_closed, close_ip, order_id, account_identify, id, equity_before_closed, base_currency, delete_ip, free_margin_before_closed, open_user, margin_requirement, close_price, open_input_time, trade_currency, close_conv_rate, profit, report_currency_rate, open_commission, close_time, account_number, settle_currency_rate, open_report_date, value_date, symbol_name, open_input_user, open_conv_rate, operator, delete_user, report_date, report_currency, open_position_id, volume, trade_currency_rate, swap, spread, taxes, order_type_id, storage)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE trade_detail SET delete_time = ?, open_ip = ?, open_price = ?, mktprice_close = ?, close_input_time = ?, open_time = ?, close_trade_date = ?, take_profit = ?, terminal = ?, close_turnover = ?, settle_currency = ?, stop_loss = ?, price_decimal = ?, commission = ?, symbol_id = ?, trade_type_id = ?, equity_after_closed = ?, status = ?, close_report_date = ?, open_turnover = ?, margin_rate = ?, agent_commission = ?, update_time = ?, used_margin_before_closed = ?, trade_account_id = ?, open_trade_date = ?, comment = ?, close_input_user = ?, balance_before_closed = ?, balance_after_closed = ?, mktprice_open = ?, close_commission = ?, original_symbol = ?, used_margin_after_closed = ?, free_margin_after_closed = ?, close_ip = ?, order_id = ?, account_identify = ?, id = ?, equity_before_closed = ?, base_currency = ?, delete_ip = ?, free_margin_before_closed = ?, open_user = ?, margin_requirement = ?, close_price = ?, open_input_time = ?, trade_currency = ?, close_conv_rate = ?, profit = ?, report_currency_rate = ?, open_commission = ?, close_time = ?, account_number = ?, settle_currency_rate = ?, open_report_date = ?, value_date = ?, symbol_name = ?, open_input_user = ?, open_conv_rate = ?, operator = ?, delete_user = ?, report_date = ?, report_currency = ?, open_position_id = ?, volume = ?, trade_currency_rate = ?, swap = ?, spread = ?, taxes = ?, order_type_id = ?, storage = ?
+					WHERE 
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM trade_detail
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM trade_detail WHERE 
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM trade_detail WHERE 
+					]]></value>
+				</entry>
+				
+				<entry key="selectAllByDateRange">
+					<value><![CDATA[
+					SELECT * FROM trade_detail WHERE value_date >= ? AND value_date <= ?
+					]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

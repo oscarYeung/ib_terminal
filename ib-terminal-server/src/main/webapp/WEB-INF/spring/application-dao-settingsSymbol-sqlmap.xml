@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="SettingsSymbolDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO settings_symbol
+					(symbol, currency, tick_size, contract_size, spread, closing_rate, base_currency_rate, trade_date, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), 'system')
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE settings_symbol SET currency = ?, tick_size = ?, contract_size = ?, spread = ?, closing_rate = ?, base_currency_rate = ?, last_update_time = ?, last_update_user = ?
+					WHERE symbol = ? AND trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="updateBatch">
+					<value><![CDATA[
+					INSERT INTO settings_symbol (symbol,trade_date,spread,last_update_time,last_update_user) VALUES (?,?,?,now(),?)
+					ON DUPLICATE KEY UPDATE spread=VALUES(spread),last_update_time=VALUES(last_update_time),last_update_user=VALUES(last_update_user)
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM settings_symbol
+					]]></value>
+				</entry>
+				
+				<entry key="selectBySymbol">
+					<value><![CDATA[
+					SELECT * FROM settings_symbol WHERE symbol = ? 
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM settings_symbol WHERE symbol = ? AND trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM settings_symbol WHERE symbol = ? AND trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="deleteByTradeDate">
+					<value><![CDATA[
+					DELETE FROM settings_symbol WHERE trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectFromSAP">
+					<value><![CDATA[
+					select a.symbol_code as symbol, a.trade_currency as currency, a.contract_size, a.tick_size, a.spread, b.today_close as closing_rate, b.base_currency_rate 
+					from (
+						select * from (
+							select symbol_code, trade_currency, contract_size, tick_size, spread, row_number() over(partition by symbol_code order by spread desc) as roworder
+							from d_symbol 
+							where report_date = ?
+						)aa where roworder = 1
+					) a
+					left join 
+						(
+							select symbol_name, today_close, base_currency_rate, report_date 
+							from d_daily_chart 
+							where report_date = ?
+							) b on a.symbol_code COLLATE SQL_Latin1_General_CP1_CI_AS = b.symbol_name COLLATE SQL_Latin1_General_CP1_CI_AS
+										
+					union all
+										
+					select symbol_name as symbol, base_currency as currency, 0 as contract_size, 0 as tick_size, 0 as spread, today_close as closing_rate, base_currency_rate 
+					from d_daily_chart 
+					where symbol_name not in (select symbol_code from d_symbol where report_date = ?)
+						and report_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByTradeDate">
+					<value><![CDATA[
+					select A.* from settings_symbol A
+					right join 
+					(
+						select symbol, max(trade_date) as trade_date 
+					    from settings_symbol 
+					    where trade_date <= ? 
+					    group by symbol
+					) B on A.symbol = B.symbol and A.trade_date = B.trade_date;
+					]]></value>
+				</entry>
+				
+				<entry key="selectDefaultSpread">
+					<value><![CDATA[
+					select * from settings_symbol_default_spread
+					]]></value>
+				</entry>
+				
+				<entry key="deleteDefaultSpread">
+					<value><![CDATA[
+					delete from settings_symbol_default_spread
+					]]></value>
+				</entry>
+				
+				<entry key="createDefaultSpread">
+					<value><![CDATA[
+					INSERT INTO settings_symbol_default_spread
+					(symbol, spread, tick_size, contract_size, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, now(), 'mt5')
+					]]></value>
+				</entry>
+				
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="OpenTradeDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO open_trade
+					(trade_date, ticket, client_code, platform, bs, lot, symbol, pl, commission, swap, account_idenify, open_price, open_time)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE open_trade SET client_code = ?, platform = ?, bs = ?, lot = ?, symbol = ?, pl = ?, commission = ?, swap = ?, account_idenify = ?, open_price = ?, open_time = ?
+					WHERE trade_date = ? AND ticket = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM open_trade
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM open_trade WHERE trade_date = ? AND ticket = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM open_trade WHERE trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="sap_selectByTradeDate">
+					<value><![CDATA[
+					Select 
+						order_id AS ticket,
+						account_number AS client_code,
+						ISNULL(terminal, '') AS platform,
+						case trade_type_id when 1005 then 'B' else 'S' end AS bs,
+						volume as lot,
+						symbol_name AS symbol,
+						profit / report_currency_rate AS pl,
+						commission,
+						swap / report_currency_rate AS swap,
+						account_identify,
+						open_price,
+						value_date AS trade_date,
+						open_time AS open_time
+					FROM d_open_trade
+					WHERE trade_type_id IN (1005, 1006) AND
+						value_date = ?;
+					]]></value>
+				</entry>
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

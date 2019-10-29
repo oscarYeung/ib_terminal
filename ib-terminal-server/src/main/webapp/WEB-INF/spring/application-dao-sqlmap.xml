@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="sz_IprofileDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_profile (address,brand_code,chinese_name,country,create_time,email,first_name,language,last_name,last_update_time,
+					last_update_user,mobile,password,sex,status,username) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) 
+					]]></value>
+				</entry>
+				<entry key="getProfileCountByUsername">
+					<value><![CDATA[select count(0) from ib_profile where username = ?]]></value>
+				</entry>
+				<entry key="getProfileByIbCodeAndBrandCode">
+					<value><![CDATA[select * from ib_profile where ib_code = ? and brand_code = ?]]></value>
+				</entry>
+				<entry key="getProfileByUsernameAndBrandCode">
+					<value><![CDATA[select * from ib_profile where username = ? and brand_code = ?]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+	<bean id="sz_IprofileHistoryDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_profile_history (address,brand_code,chinese_name,country,create_time,email,first_name,language,last_name,
+					last_update_user,mobile,password,sex,status,username,ib_code,version) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) 
+					]]></value>
+				</entry>
+				<entry key="selectMaxVersionByCode">
+					<value><![CDATA[select ifnull((select max(version)+1 from ib_profile_history where ib_code=? group by ib_code),1)]]></value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

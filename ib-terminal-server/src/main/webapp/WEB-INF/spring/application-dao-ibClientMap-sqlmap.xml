@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="IbClientMapDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO ib_client_map
+					(ib_code, client_code, client_package_code, start_date, end_date, last_update_time, last_update_user)
+					VALUES (?, ?, ?, ?, ?, now(), ?)
+					
+					
+					]]></value>
+				</entry>
+				<entry key="update">
+					<value><![CDATA[
+					UPDATE ib_client_map SET last_update_time = now(), end_date = ?, client_package_code = ?, last_update_user = ?
+					WHERE client_code = ? AND ib_code = ? AND start_date = ?
+					]]></value>
+
+
+
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM ib_client_map
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM ib_client_map WHERE client_code = ? AND ib_code = ? AND start_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectByIbCode">
+					<value><![CDATA[
+					SELECT * FROM ib_client_map WHERE ib_code = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM ib_client_map WHERE client_code = ? AND ib_code = ? AND start_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="deleteByTradeDate">
+					<value><![CDATA[
+					DELETE FROM ib_client_map WHERE start_date = ?
+					]]></value>
+				</entry>
+
+
+				<entry key="selectByIbCodeDateRange">
+					<value><![CDATA[
+					SELECT * FROM ib_client_map WHERE ib_code = ? and start_date <= ? and (end_date >= ? or end_date IS NULL)
+					]]></value>
+				</entry>
+
+				<entry key="selectCountByIbCodeDateRange">
+					<value><![CDATA[
+					SELECT count(*) FROM ib_client_map WHERE ib_code = ? and start_date <= ? and (end_date >= ? or end_date IS NULL)
+					]]></value>
+				</entry>
+
+
+				<entry key="getClientCodes">
+					<value><![CDATA[
+					SELECT client_code FROM ib_client_map
+					]]></value>
+				</entry>
+
+				<entry key="getReportByExample">
+					<value><![CDATA[
+					SELECT 
+						p.brand_code , m.* from ib_client_map m , ib_profile p 
+					WHERE 
+						m.ib_code = p.ib_code 
+						and m.start_date <= ?
+						and (m.end_date >= ? or m.end_date is null)										
+					]]></value>
+				</entry>
+
+				<entry key="getReportByUserExample">
+					<value><![CDATA[
+					SELECT 
+						p.brand_code , m.* from ib_client_map m , ib_profile p 
+					WHERE 
+						m.ib_code = p.ib_code 
+						and m.start_date <= ?
+						and (m.end_date >= ? or m.end_date is null)			
+						and m.ib_code in (
+							SELECT B.ib_code
+							FROM ib_tree A
+							LEFT JOIN ib_tree B
+							ON B.min_id >= A.min_id AND B.max_id <= A.max_id
+							where A.id in 
+							(
+								#team_head_ids
+							)
+						)							
+					]]></value>
+				</entry>
+
+
+
+				<entry key="selectByIbCodeClientCode">
+					<value><![CDATA[
+					SELECT * FROM ib_client_map WHERE ib_code = ? AND client_code = ?							
+					]]></value>
+				</entry>
+
+				<entry key="SAP_selectByCreateDate">
+					<value><![CDATA[				
+					SELECT 
+						agent_account AS ib_code, 
+						account_number AS client_code, 
+						comment AS client_package_code, 
+						DATEADD(day, -1, create_time) AS start_date, 
+						last_modified_time AS last_update_time
+					FROM 
+					( 
+						SELECT agent_account, account_number, comment COLLATE database_default as comment, create_time , last_modified_time from [MT5Live].[dbo].[t_mt5_accounts] 
+						UNION ALL 
+						SELECT agent_account, account_number, comment COLLATE database_default as comment, create_time , last_modified_time from t_mt4_accounts
+					)A
+					WHERE agent_account != 0 AND comment != '' 
+					AND create_time >= DATEADD(day, 1, ?) and create_time <= DATEADD(day, 2, ?)
+					ORDER BY create_time desc
+					]]></value>
+				</entry>
+
+
+				<entry key="getIbClientListByIbCodes">
+					<value><![CDATA[				
+					Select * from ib_client_map where start_date <= ? and (end_date >= ? or end_date is null)									
+					]]></value>
+				</entry>
+
+
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

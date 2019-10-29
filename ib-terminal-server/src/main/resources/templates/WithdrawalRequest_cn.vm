@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script language="javascript" type="text/javascript" src="../newsletter/js/scale.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<body>
+<table width="650" border="0" align="center" cellpadding="0" cellspacing="0" style="font-family:Microsoft Yahei,Arial; font-size:14px;  line-height:140%;">
+  <tr>
+   <td align="right" colspan="10" height="86" width="650" style=" border-bottom:2px solid #e8e8e8;"><img alt="" border="0" height="86" src="http://edm.henyep.com/edm_header/hycm_edm_top_cn_red.gif" usemap="#Map3" width="650" /></td>
+  </tr>
+ <tr bgcolor="#787878" style="color:#FFFFFF; font-size:12px;font-weight:bold; font-family:Microsoft Yahei,Arial;">
+
+  <tr>
+    <td style="padding:10px 20px 0 20px;">
+
+        
+  		<p style="font-family:Microsoft Yahei,Arial; font-size:14px;">尊敬的${ib_name}：</p>
+  		
+            <p style="font-family:Microsoft Yahei,Arial; font-size:14px;">
+				取款收据号：${id}
+				<br />
+				<br />
+				我司在此确认，我司已经收到您的账号${account}取款US$ ${amount}的申请。
+				<br />
+				<br />
+				您的申请将被受理。我司会在操作完成后通知您。感谢您在兴业投资进行交易。
+				<br />
+				<br />
+				如果您有任何问题，请随时联系我们的客服团队。电话：+44-207-193-3827（北京时间周一7:00至周六5:00），或发送邮件至： customerservice@xingyetouzi.com，或者使用我们的在线聊天系统进行咨询。
+				<br />
+				<br />
+				如果您有进一步的疑问需要提供帮助，请随时联系我们。感谢您选择和我司进行交易。
+				<br />
+			</p>
+		<p>
+			
+			<br />
+			随时为您服务! 
+			<br />
+		
+			<br />
+			<strong style="font-family:Microsoft Yahei,Arial; font-size:14px; color:#900;">兴业投资团队</strong>
+			<br />
+			
+			英国伦敦EC2N 2AN，思罗克英顿大街28号3楼
+			<br />
+			<br />
+			客户服务
+			<br />
+			电话:+44-207-193-3827
+			<br />
+			传真:+44-207-628-3272
+			<br />
+			北京时间周一7:00至周六5:00
+			<br />
+		
+			
+		</p>
+		<br />
+		<p>&nbsp;</p>
+	</td>
+</tr>
+    
+    
+    <tr>
+			<td align="center" colspan="3" style="padding: 22px 0px; border-top-color: rgb(232, 232, 232); border-top-width: 1px; border-top-style: solid;" valign="top"><img alt="扫一扫 汇市资讯 尽在掌握&#10;微信号：兴业投资&#10;" height="112" src="http://image.izacholsm.com/fkImages/17693/image/HYCM%20CN%20QR%20EDM.jpg" title="扫一扫 汇市资讯 尽在掌握&#10;微信号：兴业投资&#10;" width="296" /></td>
+  </tr>
+        
+
+        
+		<tr>
+			<td style="padding: 12px 20px; color: rgb(255, 255, 255); line-height: 18px; font-size: 12px; background-color: rgb(129, 129, 131);"><strong>风险提示：</strong>所有外汇及差价合约交易都会对您的资本带来高风险。您有可能亏损掉所有资金。因此，这些 产品可能不适合所有人。您应当确保您已理解其中所涉及的风险，若有需要，请咨询个别专家建议。 <a href="http://www.xingyetouzi.com/chinese/risk_warning.html" style="color: rgb(190, 27, 46); text-decoration: none;" target="_blank">风险提示</a></td>
+		</tr>
+		<tr>
+			<td align="center" bgcolor="#dfe0e2" colspan="3" style="padding: 8px 0px; border: 1px solid rgb(204, 204, 204); border-image: none; color: rgb(51, 51, 51); font-family: Microsoft Yahei,Arial; font-size: 12px;"><span>COPYRIGHT&copy; 2017 - 兴业投资（英国）是兴业资本市场（英国）有限公司的交易名称。版权所有<br />
+			英国伦敦EC2N 2AN，思罗克英顿大街28号3楼</span></td>
+		</tr>
+  <tr><td>&nbsp;</td></tr>
+
+		<tr>
+			<td style="padding: 10px; color: rgb(51, 51, 51); line-height: 18px; font-family: Microsoft Yahei,Arial; font-size: 12px;">
+			
+			<p>此邮件所含信息为保密内容。可能具有法律特权。如果您非指定之收件人，您不应复制、转发、泄露或使用该邮件中的任何内容。如果您误收此邮件，请将其及所有备份从您的系统删除，并立即回复邮件告知发送者。我们无法保证网络通信是及 时、安 全、准确及无病毒的。对于出现的任何错误或遗漏，发送者不承担任何赔偿责任。</p>
+
+			<p>兴业投资（英国）是兴业资本市场（英国）有限公司的交易名称，兴业资本市场是成立于英国的一家有限公司，在英国注册（公司注册号02878581），并经由英国金融市场行为管理局(FCA)监管。</p>
+
+			</td>
+		</tr>
+</table>
+
+
+<map id="Map3" name="Map3"><area alt="兴业投资（英国）" coords="21,18,166,76" href="https://ib.hycm.com/login.hyml?lang=zh_CN" shape="rect" target="_blank" title="兴业投资（英国）" /> <area alt="在线客服" coords="417,28,523,54" href="https://chat8.live800.com/live800/chatClient/chatbox.jsp?companyID=299276&configID=149790&jid=1221985430" shape="rect" target="_blank" title="在线客服" /> <area alt="会员登录" coords="531,27,637,54" href="https://ib.hycm.com/login.hyml?lang=zh_CN" shape="rect" target="_blank" title="会员登录" /> <area alt="FCA许可证号: 186171" coords="529,59,637,75" href="https://register.fca.org.uk/ShPo_FirmDetailsPage?id=001b000000MfHH0AAN" shape="rect" target="_blank" title="FCA许可证号: 186171" /></map>
+
+
+</body>
+</html>
+<custom name="opencounter" type="tracking">

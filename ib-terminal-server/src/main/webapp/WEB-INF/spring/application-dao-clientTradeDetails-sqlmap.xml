@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="ClientTradeDetailsDao_SQLMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="java.lang.String">
+				<entry key="create">
+					<value><![CDATA[
+					INSERT INTO client_trade_details
+					(ticket, group_code, jurisdiction, spread_type, client_code, platform, bs, lot, symbol, pl, commission, swap, account_identify, open_price, close_price, trade_date, open_time, close_time)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					]]></value>
+				</entry>
+				<entry key="update">
+				<value><![CDATA[
+					UPDATE client_trade_details SET jurisdiction = ?, spread_type = ?, client_code = ?, platform = ?, bs = ?, lot = ?, symbol = ?, pl = ?, commission = ?, swap = ?, account_identify = ?, open_price = ?, close_price = ?, trade_date = ?, open_time = ?, close_time = ?
+					WHERE ticket = ?
+					]]></value>
+				</entry>
+
+				<entry key="selectAll">
+					<value><![CDATA[
+					SELECT * FROM client_trade_details
+					]]></value>
+				</entry>
+
+				<entry key="selectByKey">
+					<value><![CDATA[
+					SELECT * FROM client_trade_details WHERE ticket = ?
+					]]></value>
+				</entry>
+				
+				<entry key="selectByTradeDate">
+					<value><![CDATA[
+					SELECT * FROM client_trade_details WHERE trade_date = ?
+					]]></value>
+				</entry>
+
+				<entry key="delete">
+					<value><![CDATA[
+					DELETE FROM client_trade_details WHERE ticket = ?
+					]]></value>
+				</entry>
+				
+				<entry key="deleteByTradeDate">
+					<value><![CDATA[
+					DELETE FROM client_trade_details WHERE trade_date = ?
+					]]></value>
+				</entry>
+				
+				<entry key="sap_selectByTradeDate">
+					<value><![CDATA[
+					Select 
+						groups.group_code,	
+						groups.jurisdiction,
+						accounts.spread_type,
+						case details.terminal when 'MT5 Trader' then details.deal_id else details.order_id end AS ticket,
+						details.account_number AS client_code,
+						ISNULL(details.terminal, '') AS platform,
+						case details.trade_type_id when 1005 then 'B' else 'S' end AS bs,
+						details.volume as lot,
+						details.symbol_name AS symbol,
+						details.profit / details.report_currency_rate AS pl,
+						details.commission,
+						details.swap / details.report_currency_rate AS swap,
+						details.account_identify,
+						details.open_price,
+						details.close_price,
+						details.value_date AS trade_date,
+						details.open_time AS open_time,
+						details.close_time AS close_time
+					FROM d_trade_detail details
+						JOIN d_trade_account accounts on details.trade_account_id=accounts.id
+						JOIN d_business_group groups on groups.id=accounts.business_group_id
+					WHERE details.trade_type_id IN (1005, 1006) 
+						AND value_date = ? 
+						AND (details.volume <> 0 or commission <> 0)
+						AND NOT
+							(
+								details.close_input_time = convert(nvarchar(MAX), DATEADD(day, -4, CONVERT (date, SYSDATETIME())), 23) + ' 21:00:00.000' 
+								and details.comment like '%Trf%'
+							)
+					]]></value>
+				</entry>
+				
+				<entry key="getLastTradeDate">
+					<value><![CDATA[
+					SELECT trade_date FROM client_trade_details ORDER BY trade_date DESC LIMIT 1;
+					]]></value>
+				</entry>
+				
+				
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>
