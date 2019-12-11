@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -186,7 +188,107 @@ public class ReportServiceImpl implements ReportService {
 	}
 	
 	@Override
-	public void setIBCommissionSummaryToWorkSheet(GetIbCommissionReportRequest request, HSSFWorkbook workbook, HSSFCellStyle style, SenderDto sender, String sheetName)
+	public void setSummaryToWorkSheet(HSSFWorkbook workbook, HSSFCellStyle style, Map<String, List<String>> ytdSalesSummaryDict, Map<String, List<String>> mtdSalesSummaryDict)
+			throws Exception {
+		logger.info("Generate summary");
+		
+		HSSFSheet sheet = workbook.createSheet("SUMMARY");
+		workbook.setSheetOrder("SUMMARY", 0);
+		
+		HSSFRow rowhead = sheet.createRow((short) 2);
+		rowhead.createCell(5).setCellValue("MTD");
+		rowhead.createCell(13).setCellValue("YTD");
+		
+		rowhead = sheet.createRow((short) 4);
+		rowhead.createCell(1).setCellValue("Net deposit");
+		rowhead.createCell(2).setCellValue("Total commission");
+		rowhead.createCell(3).setCellValue("Fixed trade P/L");
+		rowhead.createCell(4).setCellValue("Floating trade P/L"); 
+		rowhead.createCell(5).setCellValue("Total trade P/L");
+		rowhead.createCell(6).setCellValue("Comm% of Fixed PNL");
+		rowhead.createCell(7).setCellValue("Comm% of Total PNL");
+		
+		rowhead.createCell(9).setCellValue("Net deposit");
+		rowhead.createCell(10).setCellValue("Total commission");
+		rowhead.createCell(11).setCellValue("Fixed trade P/L");
+		rowhead.createCell(12).setCellValue("Floating trade P/L"); 
+		rowhead.createCell(13).setCellValue("Total trade P/L");
+		rowhead.createCell(14).setCellValue("Comm% of Fixed PNL");
+		rowhead.createCell(15).setCellValue("Comm% of Total PNL");
+		
+		for (int i = 1; i <= 15; i++) {
+			HSSFCell cell = rowhead.getCell(i);
+			if(cell != null){
+				cell.setCellStyle(style);
+			}
+		}
+		
+		rowhead = sheet.createRow((short) 6);
+		rowhead.createCell(0).setCellValue("ALL HYCM INT IBs");
+		
+		setSalesSummaryRow("shekho", 8, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		setSalesSummaryRow("konstantinos", 9, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		setSalesSummaryRow("zaher", 10, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		setSalesSummaryRow("ilona", 11, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		
+		setSalesSummaryRow("muzakir", 13, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		setSalesSummaryRow("husam", 14, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		setSalesSummaryRow("fayez", 15, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		setSalesSummaryRow("ahmed", 16, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		
+		
+		rowhead = sheet.createRow((short) 19);
+		rowhead.createCell(0).setCellValue("ALL HYCM KW IBs");
+		setSalesSummaryRow("binod", 21, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		setSalesSummaryRow("muzammil", 22, sheet, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		
+		
+		for (int x = 0; x <= 15; x++) {
+			sheet.autoSizeColumn(x);
+		}
+	}
+	
+	private void setSalesSummaryRow(String salesName, int row, HSSFSheet sheet, Map<String, List<String>> ytdSalesSummaryDict, Map<String, List<String>> mtdSalesSummaryDict){
+			
+		HSSFRow rowhead = sheet.createRow((short) row);
+		rowhead.createCell(0).setCellValue(salesName);
+		
+		if(mtdSalesSummaryDict.containsKey(salesName)){
+			int col = 1;
+			
+			for(String item: mtdSalesSummaryDict.get(salesName)){
+				if(item != null){
+					try {
+				        double d = Double.parseDouble(item);
+				        rowhead.createCell(col).setCellValue(d);
+				    } catch (NumberFormatException nfe) {
+				    	rowhead.createCell(col).setCellValue(item);
+				    }
+				}
+				
+				col++;
+			}
+		}
+		
+		if(ytdSalesSummaryDict.containsKey(salesName)){
+			int col = 9;
+			
+			for(String item: ytdSalesSummaryDict.get(salesName)){
+				if(item != null){
+					try {
+				        double d = Double.parseDouble(item);
+				        rowhead.createCell(col).setCellValue(d);
+				    } catch (NumberFormatException nfe) {
+				    	rowhead.createCell(col).setCellValue(item);
+				    }
+				}
+				col++;
+			}
+		}
+	}
+	
+	@Override
+	public List<String> setIBCommissionSummaryToWorkSheet(GetIbCommissionReportRequest request, HSSFWorkbook workbook, HSSFCellStyle style, SenderDto sender, String sheetName)
 			throws Exception {
 		logger.info("Generating IB summary report");
 		HSSFSheet sheet = workbook.createSheet(sheetName);
@@ -211,6 +313,9 @@ public class ReportServiceImpl implements ReportService {
 
 		List<IbProductGroupSummaryDto> ibSummaryProductGroupBeanList = ibCommissionSummaryDao.getIbCommissionSummarysProductGroup(startDate, endDate, brandCode, ibCodes,
 				sender.getSender(), jurisdiction);
+		
+		
+		
 		
 		List<String> summaryProductGroupList = new ArrayList<String>();
 		// ib_code --> product group --> total commission
@@ -400,10 +505,20 @@ public class ReportServiceImpl implements ReportService {
 		totalRow.createCell(fixedColSize + summaryProductGroupList.size() + 6).setCellValue(String.format("%.2f",totalCommissPrecentFixedPnl) + "%");
 		totalRow.createCell(fixedColSize + summaryProductGroupList.size() + 7).setCellValue(String.format("%.2f",totalCommissPrecentPnl) + "%");
 		
-
+		List<String> summaryList = new ArrayList<String>();
+		summaryList.add(sum_net_deposit.toString());
+		summaryList.add(sum_total_commission.toString());
+		summaryList.add(sum_fixed_PNL.toString());
+		summaryList.add(sum_total_floating_pl.toString());
+		summaryList.add(sum_total_trade_pl.toString());
+		summaryList.add(String.format("%.2f",totalCommissPrecentFixedPnl) + "%");
+		summaryList.add(String.format("%.2f",totalCommissPrecentPnl) + "%");
+		
 		for (int x = 0; x < sheet.getRow(2).getPhysicalNumberOfCells(); x++) {
 			sheet.autoSizeColumn(x);
 		}
+		
+		return summaryList;
 	}
 	
 
