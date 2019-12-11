@@ -1,6 +1,8 @@
 package com.henyep.ib.terminal.server.service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +25,7 @@ public interface ReportService {
 	
 	public void getMarginInOutReport(GetMarginInOutReportRequest request, HttpServletResponse response, SenderDto sender) throws Exception;
 	
-	public void setIBCommissionSummaryToWorkSheet(GetIbCommissionReportRequest request, HSSFWorkbook workbook, HSSFCellStyle style, SenderDto sender, String sheetName)
+	public List<String> setIBCommissionSummaryToWorkSheet(GetIbCommissionReportRequest request, HSSFWorkbook workbook, HSSFCellStyle style, SenderDto sender, String sheetName)
 			throws Exception;
 	
 	public void setClientCommissionSummaryPeriodToWorkSheet(GetIbCommissionReportRequest request, HSSFWorkbook workbook, HSSFCellStyle style,
@@ -32,4 +34,8 @@ public interface ReportService {
 	
 	public void setTradeCommissionSummaryToWorkSheet(GetIbCommissionReportRequest request, HSSFWorkbook workbook, HSSFCellStyle style,
 			SenderDto sender) throws Exception;
+	
+	
+	public void setSummaryToWorkSheet(HSSFWorkbook workbook, HSSFCellStyle style, Map<String, List<String>> ytdSalesSummaryDict, Map<String, List<String>> mtdSalesSummaryDict) throws Exception;
+	
 }

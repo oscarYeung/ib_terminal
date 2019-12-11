@@ -1,11 +1,13 @@
 package com.henyep.ib.terminal.server.schedule;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1195,7 +1197,7 @@ public class ScheduleTask {
 		Date endDate = DateUtil.getLastDay();
 		String brandCode = "INT";
 		String sender = "intadmin";
-		SendIbCommissionReport(startDate, endDate, brandCode, sender, false);
+		SendIbCommissionReport(startDate, endDate, brandCode, sender, true);
 	}
 	
 	public void SendIbCommissionReport(Date startDate, Date endDate, String brandCode, String intadmin, boolean isSendChrisReport) throws Exception{
@@ -1216,6 +1218,7 @@ public class ScheduleTask {
 			workbook.write(byteOutput);
 			sendReportEmail(new ByteArrayResource(byteOutput.toByteArray()), emailConfig.getIbCommissionSummaryReportAdminEmail(), startDate, endDate, emailConfig.getIbCommissionSummaryReportAdminName());
 			//sendReportEmail(new ByteArrayResource(byteOutput.toByteArray()), "oscar.yeung@henyep.com", startDate, endDate, "oscar.yeung@henyep.com");
+						
 			
 		}
 		
@@ -1282,17 +1285,34 @@ public class ScheduleTask {
 		dto.setEnd_date(endDate);
 		
 		
-		String ibOwner = "intadmin";
-		SenderDto senderDto = new SenderDto();
-		senderDto.setSender(ibOwner);
 		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		cal.set(Calendar.MONTH, 0);
 		dto.setStart_date(cal.getTime());
+		
+		SenderDto senderDto = new SenderDto();
+		
+		String ibOwner = "intadmin";
+		
+		senderDto.setSender(ibOwner);
 		reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, "All IBs - YTD");
 		dto.setStart_date(startDate);
 		reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, "All IBs - MTD");
+		
+		senderDto.setSender("dubaiHead");
+		reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, "All HYCM INT IBs - YTD");
+		dto.setStart_date(startDate);
+		reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, "All HYCM INT IBs - MTD");
+		
+		senderDto.setSender("asiyaHead");
+		reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, "All HYCM KW IBs - YTD");
+		dto.setStart_date(startDate);
+		reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, "All HYCM KW IBs - MTD");	
+		
+		
+		Map<String, List<String>> ytdSalesSummaryDict = new HashMap<String, List<String>>();
+		Map<String, List<String>> mtdSalesSummaryDict = new HashMap<String, List<String>>();
 		
 		while(ibOwners.hasNext()){
 			ibOwner = ibOwners.next();
@@ -1303,10 +1323,15 @@ public class ScheduleTask {
 			cal.set(Calendar.DAY_OF_MONTH, 1);
 			cal.set(Calendar.MONTH, 0);
 			dto.setStart_date(cal.getTime());
-			reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, ibOwner + " - YTD");
+			List<String> ytdSalesSummaryList = reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, ibOwner + " - YTD");
+			ytdSalesSummaryDict.put(ibOwner, ytdSalesSummaryList);
 			dto.setStart_date(startDate);
-			reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, ibOwner + " - MTD");
+			List<String> mtdSalesSummaryList = reportService.setIBCommissionSummaryToWorkSheet(request, workbook, style, senderDto, ibOwner + " - MTD");
+			mtdSalesSummaryDict.put(ibOwner, mtdSalesSummaryList);
 		}		
+		
+		reportService.setSummaryToWorkSheet(workbook, style, ytdSalesSummaryDict, mtdSalesSummaryDict);
+		
 		
 		senderDto = new SenderDto();
 		senderDto.setSender("intadmin");
