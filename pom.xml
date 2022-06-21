@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.8</version>
+			<version>8.0.28</version>
 		</dependency>
 		<dependency> <groupId>servletapi</groupId> <artifactId>servletapi</artifactId> 
 			<version>2.4</version> </dependency>
